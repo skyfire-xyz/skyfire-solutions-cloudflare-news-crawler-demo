@@ -1,86 +1,98 @@
-# Cloudflare KYA News Crawler Demo
+# Smart News Crawler Demo - News and Content given End-User Identity
 
-## Setup
+In this reference implementation, we’ll demonstrate how you can use `kya` tokens to gate agent and bot access to your websites and APIs. Content publishers can require agents and bots to submit verified `kya` tokens that deliver the identity of their human principal / end-user. Content publishers need not be disintermediated from their human end-users.
 
-### 1. Clone the repository
+### The Problem: Crawling Protected Content
 
-```sh
-git clone git@github.com:skyfire-xyz/skyfire-solutions-cloudflare-news-crawler-demo.git
-cd skyfire-solutions-cloudflare-news-crawler-demo
+Publishers typically want their content to be accessed by human end-users because they aim to either generate ad impressions and/or sell the human end-users on paid subscriptions. They therefore set their bot managers to block web crawlers, bots and agents, from accessing their websites unless these bots and agents deliver the identity of their human end-users.
+
+### The Solution: Skyfire’s KYA Token
+
+Skyfire enables agents and bots to deliver an **identity token**, also known as a **`kya`** token, to websites and APIs. This token contains the identity of the human principal, or business entity, on whose behalf the agent is acting. It enables crawlers, bots and agents, to access protected content in a secure, auditable, and automated way. Here’s how it works:
+
+- **Identity Verification:** The human principal, or business entity, behind the crawler, agent or bot, verifies their identity with a trusted Identity Token Issuer like Skyfire
+- **Token Generation:** At runtime, the crawler, agent or bot, requests a KYA token using Skyfire’s API
+- **Token Submission:** The crawler, agent or bot, includes the token in the HTTP headers of its requests to the protected website or API
+- **Verification and Enforcement:** The protected website, or its bot manager, verifies the token and tracks usage, ensuring that only authorized crawlers, agents and bots, can access the content.
+
+### Enterprise Use Case
+In addition to individual users, Skyfire supports Enterprises and Enterprise Users — enabling organizations to extend Skyfire’s secure identity and access capabilities to their own user base.
+
+When a user interacts with a merchant or content publisher that’s registered with Skyfire as an Enterprise, Skyfire automatically provisions an Enterprise User Account for that user. This means the user inherits access to Skyfire’s capabilities through their enterprise association — no separate signup is required.
+
+For example, in this demo:
+- The default user is `bobby@skyfire.xyz`.
+- She has registered under the DEF News Agent organization.
+- Since DEF News Agent is a registered enterprise with Skyfire, Bobby automatically has a Skyfire enterprise user account associated with her email and that enterprise.
+
+You can verify this by walking through the [live demo](https://crawler-news-demo-fastly.skyfire.xyz/) and decoding her `kya` token. In the decoded payload, you'll find the following field:
+
+```bash
+"apd": {
+  "id": "af0d5463-63ca-473e-b28e-8404248b7a8d",
+  "name": "DEF News Agent"
+}
 ```
+This field indicates that the user (`bobby@skyfire.xyz`) belongs to the DEF News Agent organization -- her Skyfire identity and permissions are derived from that enterprise.
 
-### 2. Install dependencies
+### Live Demo Link
 
-```sh
-npm install
-```
+You can play with the live demo [here](https://crawler-news-demo-fastly.skyfire.xyz/).
 
-### 3. Configure environment variables
+Here is a [video link](https://youtu.be/zAlU-0Af1tw?si=IlxaRk892FQ7DU5l) for the running crawler demo
 
-Edit `wrangler.toml` and set your environment variables under `[vars]`:
+### Pre-requisites
 
-```toml
-[vars]
-BACKEND_API_URL = "https://api-qa.skyfire.xyz"
-OFFICIAL_SKYFIRE_AGENT_ID = "your-seller-id"
-OFFICIAL_SKYFIRE_JWT_ALGORITHM = "ES256"
-```
+To run this demo,
 
-**Do not put secrets in `wrangler.toml`.**
+- Follow the [Skyfire Platform Setup Guide](https://docs.skyfire.xyz/docs/introduction) to create your Skyfire API key and onboard your Buyer and Seller.
 
-#### Add secrets securely:
+### Contents:
 
-```sh
-npx wrangler secret put OFFICIAL_SKYFIRE_API_KEY
-```
+The demo consists of four integrated projects that work together to demonstrate how content owners can control access to their valuable content while providing legitimate crawlers, agents and bots, with automated access.
 
-### 4. Build the Worker
+1. Crawler Agent Frontend:
 
-Bundle your TypeScript code for deployment:
+- Available at: [https://github.com/skyfire-xyz/skyfire-solutions-cloudflare-news-crawler-demo/crawler-agent-fe](/crawler-agent-fe/)
+- Purpose: Interactive frontend that demonstrates the difference between authorized and unauthorized crawling
+- Features:
+  - Skyfire token management interface
+  - Demonstrates successful requests (with valid identification tokens)
+- Technology: Next.js frontend with intuitive UI
 
-```sh
-npx esbuild worker.ts --bundle --outfile=dist/worker.js --format=esm --platform=browser
-```
+2. Crawler Agent Core:
 
-### 5. Deploy to Cloudflare
+- Available at: [https://github.com/skyfire-xyz/skyfire-solutions-cloudflare-news-crawler-demo/crawler-agent-core](/crawler-agent-core/)
+- Purpose: Backend service that performs the actual crawling operations
+- Features:
+  - Executes crawl requests with and without `kya` tokens
+  - Integrates with Bot Protect Proxy for access control
+  - Handles token validation and request processing
+  - Provides API endpoints for the frontend
+  - Manages crawl job queuing and execution
+- Technology: Node.js/Express with crawler logic
 
-Authenticate with Cloudflare (first time only):
+3. Cloudflare Worker:
 
-```sh
-npx wrangler login
-```
+- Available at: [https://github.com/skyfire-xyz/skyfire-solutions-cloudflare-news-crawler-demo/cloudflare](/cloudflare/)
+- Purpose: Acts as the bot manager and `kya` token processor
+- Features:
+  - `kya` Token Verification - Validates the tokens in the `skyfire-pay-id` header of the requests
+  - Request Proxying - Forwards valid requests to the target website
 
-Deploy your Worker to QA:
+4. Protected Website:
 
+- Available at: [https://demo-mock-news.onrender.com](https://demo-mock-news.onrender.com)
+- Purpose: Simulates valuable content that requires end-user identification from crawler, agents and bots
 
-```sh
-npx wrangler deploy
-```
+### Installation Steps
 
-Deploy your Worker to Prod:
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/skyfire-xyz/skyfire-solutions-cloudflare-news-crawler-demo.git
+    ```
+2.  Follow installation instructions in each sub-directory
 
+### Note:
 
-```sh
-npx wrangler --config wrangler.toml.prod deploy
-```
-
-### 6. Test your Worker
-
-- Visit the deployed URL shown in the deploy output (e.g. `https://skyfire-solutions-cloudflare-news-crawler-demo.supermojo.workers.dev/`).
-- Use `curl` or your frontend to send requests.
-
-## CORS
-
-This Worker is CORS-enabled. All responses (including errors) include the necessary CORS headers. If you use custom headers or credentials, adjust the CORS logic as needed.
-
-## Useful Commands
-
-- Build: `npx esbuild worker.ts --bundle --outfile=dist/worker.js --format=esm --platform=browser`
-- Deploy: `npx wrangler deploy`
-- Add secret: `npx wrangler secret put <SECRET_NAME>`
-
-## References
-
-- [Cloudflare Workers Docs](https://developers.cloudflare.com/workers/)
-- [Wrangler Docs](https://developers.cloudflare.com/workers/wrangler/)
-- [esbuild Docs](https://esbuild.github.io/)
+Take a look at the live demo [https://crawler-news-demo-fastly.skyfire.xyz/](https://crawler-news-demo-fastly.skyfire.xyz/).
