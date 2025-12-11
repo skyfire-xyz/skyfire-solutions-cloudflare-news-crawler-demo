@@ -35,10 +35,10 @@ export default {
       return new Response(
         JSON.stringify({
           error:
-            "Missing KYA token `skyfire-pay-id`. Please create an account at https://app.skyfire.xyz and create a KYA token - https://docs.skyfire.xyz/reference/create-token.",
+            "Missing KYAPay token in the skyfire-pay-id header. Please create an account at https://app.skyfire.xyz and create a kya token - https://docs.skyfire.xyz/reference/create-token and include it in your request in the skyfire-pay-id header.",
         }),
         {
-          status: 401,
+          status: 403,
           headers: { "Content-Type": "application/json" },
         }
       );
@@ -74,7 +74,7 @@ export default {
         return new Response(
           JSON.stringify({
             error:
-              "`Invalid KYA token `skyfire-pay-id`. Please create an account at https://app.skyfire.xyz and create a KYA token - https://docs.skyfire.xyz/reference/create-token.`",
+              "`Invalid KYAPay token in the skyfire-pay-id header. Please create an account at https://app.skyfire.xyz and create a kya token - https://docs.skyfire.xyz/reference/create-token and include it in your request in the skyfire-pay-id header.`",
             errorCode: err.code,
             message: err.message,
           }),
@@ -153,7 +153,7 @@ export default {
         }
       );
     }
-    
+
     return await fetch(ORIGIN_URL);
   },
 };
