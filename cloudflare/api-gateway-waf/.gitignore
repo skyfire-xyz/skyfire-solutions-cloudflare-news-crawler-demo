@@ -1,0 +1,27 @@
+# Node modules
+node_modules/
+
+# Build output
+dist/
+
+# Local env files
+.env
+.env.*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Mac system files
+.DS_Store
+
+# Cloudflare Wrangler
+.wrangler/
+
+# TypeScript
+*.tsbuildinfo
+
+# Ignore local wrangler secrets (if any)
+wrangler-local.toml 
+wrangler.toml
