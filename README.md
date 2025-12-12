@@ -25,7 +25,7 @@ For example, in this demo:
 - She has registered under the DEF News Agent organization.
 - Since DEF News Agent is a registered enterprise with Skyfire, Bobby automatically has a Skyfire enterprise user account associated with her email and that enterprise.
 
-You can verify this by walking through the [live demo](https://crawler-news-demo-fastly.skyfire.xyz/) and decoding her `kya` token. In the decoded payload, you'll find the following field:
+You can verify this by walking through the [live demo](https://crawler-news-demo-cloudflare.skyfire.xyz/) and decoding her `kya` token. In the decoded payload, you'll find the following field:
 
 ```bash
 "apd": {
@@ -37,7 +37,7 @@ This field indicates that the user (`bobby@skyfire.xyz`) belongs to the DEF News
 
 ### Live Demo Link
 
-You can play with the live demo [here](https://crawler-news-demo-fastly.skyfire.xyz/).
+You can play with the live demo [here](https://crawler-news-demo-cloudflare.skyfire.xyz/).
 
 Here is a [video link](https://youtu.be/zAlU-0Af1tw?si=IlxaRk892FQ7DU5l) for the running crawler demo
 
@@ -95,4 +95,4 @@ The demo consists of four integrated projects that work together to demonstrate 
 
 ### Note:
 
-Take a look at the live demo [https://crawler-news-demo-fastly.skyfire.xyz/](https://crawler-news-demo-fastly.skyfire.xyz/).
+Take a look at the live demo [https://crawler-news-demo-cloudflare.skyfire.xyz/](https://crawler-news-demo-cloudflare.skyfire.xyz/).
