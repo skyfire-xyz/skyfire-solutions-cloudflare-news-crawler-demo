@@ -54,13 +54,18 @@ npx esbuild worker.ts --bundle --outfile=dist/worker.js --format=esm --platform=
 
 - Visit your deployed worker on Cloudflare Dashboard
 - Navigate to Settings
-- Add a route to your website hosted on CDN in the Custom Domains & Routing section
+- Add a route to your website hosted on CDN in the Domains & Routes section
+
+![add route to worker](/cloudflare/static/cdn-waf-route.png)
 
 4. Setup WAF rules
 
 - Log in to your Cloudflare account and navigate to your domain
 - Navigate to Security -> Security rules
 - Create a custom rule to check for presence of ``skyfire-pay-id`` header or else block the request on this hostname. If you're on an enterprise plan and have bot management enabled, you can utilise bot-score condition also in this rule
+
+In our demo, this is how our rule is configured - 
+![sample waf rule](/cloudflare/static/cdn-waf-rule.png)
 
 ## Setup Instructions
 

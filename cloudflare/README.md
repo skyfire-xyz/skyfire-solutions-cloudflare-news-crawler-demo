@@ -6,10 +6,10 @@ Refer folder based on your architecture for more details:
 
 ## 1. CDN-Based Architectures
 
-1.1 [CDN using Worker](/cloudflare/cdn/) \\
-1.2 [CDN with WAF & Bot Management using Worker](/cloudflare/cdn-waf/) \\
+1.1 [CDN using Worker](/cloudflare/cdn/)
+1.2 [CDN with WAF & Bot Management using Worker](/cloudflare/cdn-waf/)
 
 ## 2. API Gateway-Based Architecture
 
-2.1 [API Gateway using Worker](/cloudflare/api-gateway/) \\
-2.2 [API Gateway with WAF & Bot Management using Worker](/cloudflare/api-gateway-waf/) \\
+2.1 [API Gateway using Worker](/cloudflare/api-gateway/)
+2.2 [API Gateway with WAF & Bot Management using Worker](/cloudflare/api-gateway-waf/) 
