@@ -20,7 +20,7 @@ const CLOUDFLARE_URLS = [
   },
   {
     name: "CDN + WAF",
-    url: "https://mock-news-cloudflare-cdn-waf-demo.skyfire.xyz/",
+    url: "https://mock-news-cloudflare-cdn-waf1-demo.skyfire.xyz/",
   },
 ]
 

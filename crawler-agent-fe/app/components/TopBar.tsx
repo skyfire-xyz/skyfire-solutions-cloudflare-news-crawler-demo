@@ -7,10 +7,15 @@ interface TopBarProps {
   showCloudflareLink?: boolean
 }
 
-const CLOUDFLARE_URL = process.env.NEXT_PUBLIC_TARGET_SITE || ""
+const CLOUDFLARE_URLS = [
+  "https://mock-news-cloudflare-api-gateway-demo.skyfire.xyz/",
+  "https://mock-news-cloudflare-api-gateway-waf-demo.skyfire.xyz/",
+  "https://mock-news-cloudflare-cdn-demo.skyfire.xyz/",
+  "https://mock-news-cloudflare-cdn-waf1-demo.skyfire.xyz/", 
+]
 
 export default function TopBar({selectedUrl, showCloudflareLink: showCloudflareLinkProp} : TopBarProps) {
-  const showCloudflareGithubLink = !!selectedUrl && CLOUDFLARE_URL === selectedUrl
+  const showCloudflareGithubLink = !!selectedUrl && CLOUDFLARE_URLS.includes(selectedUrl)
   const showCloudflareLink = typeof showCloudflareLinkProp === "boolean" ? showCloudflareLinkProp : showCloudflareGithubLink
   
   return (
@@ -78,7 +83,7 @@ export default function TopBar({selectedUrl, showCloudflareLink: showCloudflareL
           {/* GitHub Repo Link Button */}
           {showCloudflareLink && (<div className="mb-3">
             <a
-              href="https://github.com/skyfire-xyz/skyfire-solutions-cloudflare-news-crawler-demo"
+              href="https://github.com/skyfire-xyz/skyfire-solutions-cloudflare-news-crawler-demo/cloudflare"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-lg bg-gray-800 px-4 py-2 text-sm text-white transition hover:bg-gray-700"
