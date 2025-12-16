@@ -46,7 +46,6 @@ interface Suggestion {
 
 const suggestions: Suggestion[] = [
   { url: "https://skyfire.xyz", name: "Skyfire", type: "Unprotected" },
-  { url: "https://mock-news-site.skyfire.xyz/", name: "MockNews", type: "Protected"},
   { url: "https://mock-news-cloudflare-api-gateway-demo.skyfire.xyz/", name: "MockNews (Cloudflare API Gateway)", type: "Protected"},
   { url: "https://mock-news-cloudflare-api-gateway-waf-demo.skyfire.xyz/", name: "MockNews (Cloudflare API Gateway + WAF)", type: "Protected"},
   { url: "https://mock-news-cloudflare-cdn-demo.skyfire.xyz/", name: "MockNews (Cloudflare CDN)", type: "Protected"},
