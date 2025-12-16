@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { useCrawling } from "../contexts/CrawlingContext"
 
 import { Alert, AlertType } from "../types"
 
@@ -63,7 +64,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   onCloudflareUrlChange,
 }) => {
   const [kyaToken, setKyaToken] = useState<string>(skyfireKyaToken || "")
-  const [isLoading, setIsLoading] = useState(false)
+  const { isCrawling: isLoading, setIsCrawling: setIsLoading } = useCrawling()
   const [isFocused, setIsFocused] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
 
