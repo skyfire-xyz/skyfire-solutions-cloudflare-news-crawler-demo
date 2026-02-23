@@ -1,4 +1,4 @@
-# CDN-Based Architectures (CDN + Worker + WAF)
+# CDN-Based Architectures (CDN + Worker)
 
 ## CDN Overview
 
