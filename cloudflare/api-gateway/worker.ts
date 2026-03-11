@@ -56,11 +56,11 @@ export default {
         algorithms: [JWT_ALGORITHM],
       }));
 
-      if (!["kya+jwt", "kya+pay+jwt"].includes(`${protectedHeader.typ}`)) {
+      if (!["kya+JWT", "kya+pay+JWT"].includes(`${protectedHeader.typ}`)) {
         console.log("Invalid typ:", protectedHeader.typ);
         return new Response(
           JSON.stringify({
-            error: "Invalid typ - typ should be one of kya+jwt or kya+pay+jwt",
+            error: "Invalid typ - typ should be one of kya+JWT or kya+pay+JWT",
           }),
           {
             status: 401,
@@ -96,7 +96,7 @@ export default {
     }
 
     // JWT successfully verified, now verify email
-    const isEmailValid = validator.isEmail(payload.hid.email);
+    const isEmailValid = validator.isEmail(payload.bid.email);
 
     if (!isEmailValid) {
       console.log("Invalid email format");
