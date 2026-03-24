@@ -1,5 +1,5 @@
 {
-  "name": "skyfire-solutions-cloudflare-api-crawler-demo",
+  "name": "skyfire-solutions-cloudflare-api-waf-crawler-demo",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

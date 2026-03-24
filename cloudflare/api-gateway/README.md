@@ -54,6 +54,9 @@ npx esbuild worker.ts --bundle --outfile=dist/worker.js --format=esm --platform=
 
 - Expand the details for the specific endpoint.
 - Under the Routing section, select Create route.
+
+![add or edit route](/cloudflare/static/api-gateway-route.png)
+
 - Enter the target URL of your deployed Worker (e.g., your-worker.your-subdomain.workers.dev) in the target field.
 - Select Deploy route to link the API Gateway endpoint to your Worker. 
 

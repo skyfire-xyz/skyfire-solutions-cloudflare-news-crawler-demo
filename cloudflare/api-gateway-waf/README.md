@@ -58,6 +58,9 @@ npx esbuild worker.ts --bundle --outfile=dist/worker.js --format=esm --platform=
 
 - Expand the details for the specific endpoint
 - Under the Routing section, select Create route
+
+![add or edit route](/cloudflare/static/api-gateway-route.png)
+
 - Enter the target URL of your deployed Worker (e.g., your-worker.your-subdomain.workers.dev) in the target field
 - Select Deploy route to link the API Gateway endpoint to your Worker
 
@@ -66,6 +69,9 @@ npx esbuild worker.ts --bundle --outfile=dist/worker.js --format=esm --platform=
 - Log in to your Cloudflare account and navigate to your domain
 - Navigate to Security -> Security rules
 - Create a custom rule to check for presence of ``skyfire-pay-id`` header or else block the request on this hostname. If you're on an enterprise plan and have bot management enabled, you can utilise bot-score condition also in this rule
+
+In our demo, this is how our rule is configured - 
+![sample waf rule](/cloudflare/static/api-gateway-waf-rule.png)
 
 ## Setup Instructions
 

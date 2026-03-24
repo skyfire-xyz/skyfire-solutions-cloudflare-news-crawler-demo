@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { useCrawling } from "../contexts/CrawlingContext"
 
 import { Alert, AlertType } from "../types"
 
@@ -46,7 +47,6 @@ interface Suggestion {
 
 const suggestions: Suggestion[] = [
   { url: "https://skyfire.xyz", name: "Skyfire", type: "Unprotected" },
-  { url: "https://mock-news-site.skyfire.xyz/", name: "MockNews", type: "Protected"},
   { url: "https://mock-news-cloudflare-api-gateway-demo.skyfire.xyz/", name: "MockNews (Cloudflare API Gateway)", type: "Protected"},
   { url: "https://mock-news-cloudflare-api-gateway-waf-demo.skyfire.xyz/", name: "MockNews (Cloudflare API Gateway + WAF)", type: "Protected"},
   { url: "https://mock-news-cloudflare-cdn-demo.skyfire.xyz/", name: "MockNews (Cloudflare CDN)", type: "Protected"},
@@ -63,7 +63,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   onCloudflareUrlChange,
 }) => {
   const [kyaToken, setKyaToken] = useState<string>(skyfireKyaToken || "")
-  const [isLoading, setIsLoading] = useState(false)
+  const { isCrawling: isLoading, setIsCrawling: setIsLoading } = useCrawling()
   const [isFocused, setIsFocused] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(-1)
 
@@ -192,6 +192,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                         onKeyDown={handleKeyDown}
                         placeholder="Select or Enter website URL"
                         autoComplete="off"
+                        disabled={isLoading}
                       />
                       {isFocused && (
                         <div className="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-md border bg-white shadow-lg">

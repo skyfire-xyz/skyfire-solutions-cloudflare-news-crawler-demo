@@ -14,6 +14,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 
 import "react-toastify/dist/ReactToastify.css"
 import { getClientConfig } from "@/lib/client-config"
+import { CrawlingProvider } from "./contexts/CrawlingContext"
 
 export const metadata: Metadata = {
   title: {
@@ -36,8 +37,8 @@ interface RootLayoutProps {
   children: React.ReactNode
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
-  const headersList = headers()
+export default async function RootLayout({ children }: RootLayoutProps) {
+  const headersList = await headers()
   const hostname = headersList.get("host") || "default"
   const domain = hostname.split(".")[0]
 
@@ -61,11 +62,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
             enableSystem={false}
           >
             <SkyfireProvider>
-              <div className="relative flex min-h-screen flex-col">
-                <div className="flex-1">{children}</div>
-              </div>
-              <TailwindIndicator />
-              <ToastContainer />
+              <CrawlingProvider>
+                <div className="relative flex min-h-screen flex-col">
+                  <div className="flex-1">{children}</div>
+                </div>
+                <TailwindIndicator />
+                <ToastContainer />
+              </CrawlingProvider>
             </SkyfireProvider>
           </ThemeProvider>
         </ClientProvider>
