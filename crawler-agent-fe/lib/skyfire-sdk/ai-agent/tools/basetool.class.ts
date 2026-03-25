@@ -21,13 +21,13 @@ export class BaseTool {
 
   protected createBaseTool(
     description: string,
-    parameters: z.ZodType<any, any>,
+    parameters: z.ZodTypeAny,
     execute: (args: any) => Promise<any>
   ) {
     return tool({
       description,
-      parameters,
-      execute,
+      inputSchema: parameters as any, // ai SDK v4+ uses inputSchema instead of parameters
+      execute: execute as any,
     })
   }
 }
