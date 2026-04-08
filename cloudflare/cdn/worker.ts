@@ -54,11 +54,11 @@ export default {
         algorithms: [JWT_ALGORITHM],
       }));
 
-      if (!["kya+jwt", "kya+pay+jwt"].includes(`${protectedHeader.typ}`)) {
+      if (!["kya+jwt", "kya-pay+jwt"].includes(`${protectedHeader.typ}`)) {
         console.log("Invalid typ:", protectedHeader.typ);
         return new Response(
           JSON.stringify({
-            error: "Invalid typ - typ should be one of kya+jwt or kya+pay+jwt",
+            error: "Invalid typ - typ should be one of kya+jwt or kya-pay+jwt",
           }),
           {
             status: 401,
