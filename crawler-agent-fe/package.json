@@ -15,7 +15,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
   },
   "dependencies": {
-    "@ai-sdk/openai": "0.0.68",
+    "@ai-sdk/openai": "3.0.55",
     "@heroicons/react": "2.2.0",
     "@hookform/resolvers": "3.9.0",
     "@next/third-parties": "15.4.1",
