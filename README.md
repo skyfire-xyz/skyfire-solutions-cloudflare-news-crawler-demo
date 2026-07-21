@@ -16,11 +16,13 @@ Skyfire enables agents and bots to deliver an **identity token**, also known as 
 - **Verification and Enforcement:** The protected website, or its bot manager, verifies the token and tracks usage, ensuring that only authorized crawlers, agents and bots, can access the content.
 
 ### Enterprise Use Case
+
 In addition to individual users, Skyfire supports Enterprises and Enterprise Users — enabling organizations to extend Skyfire’s secure identity and access capabilities to their own user base.
 
 When a user interacts with a merchant or content publisher that’s registered with Skyfire as an Enterprise, Skyfire automatically provisions an Enterprise User Account for that user. This means the user inherits access to Skyfire’s capabilities through their enterprise association — no separate signup is required.
 
 For example, in this demo:
+
 - The default user is `bobby@skyfire.xyz`.
 - She has registered under the DEF News Agent organization.
 - Since DEF News Agent is a registered enterprise with Skyfire, Bobby automatically has a Skyfire enterprise user account associated with her email and that enterprise.
@@ -33,6 +35,7 @@ You can verify this by walking through the [live demo](https://crawler-news-demo
   "name": "DEF News Agent"
 }
 ```
+
 This field indicates that the user (`bobby@skyfire.xyz`) belongs to the DEF News Agent organization -- her Skyfire identity and permissions are derived from that enterprise.
 
 ### Live Demo Link
@@ -77,7 +80,7 @@ The demo consists of four integrated projects that work together to demonstrate 
 - Available at: [https://github.com/skyfire-xyz/skyfire-solutions-cloudflare-news-crawler-demo/cloudflare](/cloudflare/)
 - Purpose: Acts as the API Gateway / CDN / Bot Manager and `kya` token processor
 - Features:
-  - `kya` Token Verification - Validates the tokens in the `skyfire-pay-id` header of the requests
+  - `kya` Token Verification - Validates the tokens in the `kyapay-token` or `skyfire-pay-id` header of the requests
   - Request Proxying - Forwards valid requests to the target website
 
 4. Protected Website:
