@@ -1,10 +1,6 @@
 /// <reference types="@cloudflare/workers-types" />
 
-import {
-  jwtVerify,
-  createRemoteJWKSet,
-  errors as joseErrors,
-} from "jose";
+import { jwtVerify, createRemoteJWKSet, errors as joseErrors } from "jose";
 
 var validator = require("validator");
 
@@ -19,7 +15,7 @@ export default {
   async fetch(
     request: Request,
     env: Env,
-    ctx: ExecutionContext
+    ctx: ExecutionContext,
   ): Promise<Response> {
     // Environment variables (set these in your Worker environment)
     const BACKEND_API_URL = env.BACKEND_API_URL;
@@ -27,18 +23,21 @@ export default {
     const JWKS_URL = `${BACKEND_API_URL}/.well-known/jwks.json`;
     const JWT_ISSUER = env.OFFICIAL_SKYFIRE_JWT_ISSUER;
 
-    // Authentication with skyfire-pay-id header
-    const skyfireToken = request.headers.get("skyfire-pay-id") || "";
+    // Authentication with kyapay-token or skyfire-pay-id header
+    const skyfireToken =
+      request.headers.get("kyapay-token") ||
+      request.headers.get("skyfire-pay-id") ||
+      "";
     if (!skyfireToken) {
       return new Response(
         JSON.stringify({
           error:
-            "Missing KYAPay token in the skyfire-pay-id header. Please create an account at https://app.skyfire.xyz and create a kya token - https://docs.skyfire.xyz/reference/create-token and include it in your request in the skyfire-pay-id header.",
+            "Missing KYAPay token in the kyapay-token header. Please create an account at https://app.skyfire.xyz and create a kya token - https://docs.skyfire.xyz/reference/create-token and include it in your request in the kyapay-token header.",
         }),
         {
           status: 403,
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
     }
 
@@ -63,7 +62,7 @@ export default {
           {
             status: 401,
             headers: { "content-type": "application/json" },
-          }
+          },
         );
       }
     } catch (err: unknown) {
@@ -72,14 +71,14 @@ export default {
         return new Response(
           JSON.stringify({
             error:
-              "`Invalid KYAPay token in the skyfire-pay-id header. Please create an account at https://app.skyfire.xyz and create a kya token - https://docs.skyfire.xyz/reference/create-token and include it in your request in the skyfire-pay-id header.`",
+              "`Invalid KYAPay token in the kyapay-token header. Please create an account at https://app.skyfire.xyz and create a kya token - https://docs.skyfire.xyz/reference/create-token and include it in your request in the kyapay-token header.`",
             errorCode: err.code,
             message: err.message,
           }),
           {
             status: 401,
             headers: { "Content-Type": "application/json" },
-          }
+          },
         );
       }
       return new Response(
@@ -89,7 +88,7 @@ export default {
         {
           status: 401,
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
     }
 
@@ -112,7 +111,7 @@ export default {
         {
           status: 401,
           headers: { "content-type": "application/json" },
-        }
+        },
       );
     }
 
@@ -124,7 +123,7 @@ export default {
         {
           status: 401,
           headers: { "content-type": "application/json" },
-        }
+        },
       );
     }
 
@@ -136,7 +135,7 @@ export default {
         {
           status: 401,
           headers: { "content-type": "application/json" },
-        }
+        },
       );
     }
 
@@ -148,7 +147,7 @@ export default {
         {
           status: 401,
           headers: { "content-type": "application/json" },
-        }
+        },
       );
     }
 

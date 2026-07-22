@@ -2,15 +2,15 @@
 
 ## CDN Overview
 
-Cloudflare CDN is a global content delivery network that speeds up websites by caching content on servers worldwide, serving it from the location closest to the user, reducing latency, and improving load times. Beyond just speed, it acts as a reverse proxy, providing security features like DDoS protection and Web Application Firewall (WAF) by filtering traffic before it reaches your origin server, while also optimizing content delivery for better performance and lower bandwidth costs. 
+Cloudflare CDN is a global content delivery network that speeds up websites by caching content on servers worldwide, serving it from the location closest to the user, reducing latency, and improving load times. Beyond just speed, it acts as a reverse proxy, providing security features like DDoS protection and Web Application Firewall (WAF) by filtering traffic before it reaches your origin server, while also optimizing content delivery for better performance and lower bandwidth costs.
 
 ## Cloudflare Workers
 
-A serverless platform for building, deploying, and scaling apps across Cloudflare's global network with a single command 
+A serverless platform for building, deploying, and scaling apps across Cloudflare's global network with a single command
 
 ## WAF
 
-Cloudflare WAF (Web Application Firewall) is a security service that protects websites and APIs by filtering malicious traffic, blocking attacks like SQL injection, XSS, and zero-days using machine learning and rulesets, sitting in front of your application on Cloudflare's global network to inspect HTTP requests for threats, and offering managed rules, custom policies, rate limiting, and credential leak detection for comprehensive, layered defense. 
+Cloudflare WAF (Web Application Firewall) is a security service that protects websites and APIs by filtering malicious traffic, blocking attacks like SQL injection, XSS, and zero-days using machine learning and rulesets, sitting in front of your application on Cloudflare's global network to inspect HTTP requests for threats, and offering managed rules, custom policies, rate limiting, and credential leak detection for comprehensive, layered defense.
 
 ## Deployment Steps
 
@@ -22,7 +22,7 @@ Cloudflare WAF (Web Application Firewall) is a security service that protects we
 - Select Create application
 - Choose Create Worker -> Deploy
 - Your new Worker will be deployed with a Hello World example and a temporary URL (e.g., your-worker.your-subdomain.workers.dev). You can then select Edit code to modify the script within the browser editor
-- Sample Worker code can be found [here](/cloudflare/cdn-waf/worker.ts) 
+- Sample Worker code can be found [here](/cloudflare/cdn-waf/worker.ts)
 - Edit `wrangler.toml` and set your environment variables under `[vars]`:
 
 ```toml
@@ -40,15 +40,17 @@ npx esbuild worker.ts --bundle --outfile=dist/worker.js --format=esm --platform=
 ```
 
 - Deploy to Cloudflare
-    -- Authenticate with Cloudflare (first time only):
-    ```sh
-    npx wrangler login
-    ```
+  -- Authenticate with Cloudflare (first time only):
 
-    -- Deploy your Worker:
-    ```sh
-    npx wrangler deploy
-    ```
+  ```sh
+  npx wrangler login
+  ```
+
+  -- Deploy your Worker:
+
+  ```sh
+  npx wrangler deploy
+  ```
 
 3. Add routing to your created Worker
 
@@ -62,9 +64,9 @@ npx esbuild worker.ts --bundle --outfile=dist/worker.js --format=esm --platform=
 
 - Log in to your Cloudflare account and navigate to your domain
 - Navigate to Security -> Security rules
-- Create a custom rule to check for presence of ``skyfire-pay-id`` header or else block the request on this hostname. If you're on an enterprise plan and have bot management enabled, you can utilise bot-score condition also in this rule
+- Create a custom rule to check for presence of `kyapay-token` or `skyfire-pay-id` header or else block the request on this hostname. If you're on an enterprise plan and have bot management enabled, you can utilise bot-score condition also in this rule
 
-In our demo, this is how our rule is configured - 
+In our demo, this is how our rule is configured -
 ![sample waf rule](/cloudflare/static/cdn-waf-rule.png)
 
 ## Setup Instructions
@@ -111,7 +113,6 @@ npx wrangler login
 ```
 
 Deploy your Worker:
-
 
 ```sh
 npx wrangler deploy
