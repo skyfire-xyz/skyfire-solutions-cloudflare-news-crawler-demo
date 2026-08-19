@@ -10,7 +10,7 @@ if (fs.existsSync(envFilePath)) {
     for (const k in envConfig) {
       process.env[k] = envConfig[k];
     }
-  } catch (e) {
+  } catch (_e) {
     // do nothing
   }
 }

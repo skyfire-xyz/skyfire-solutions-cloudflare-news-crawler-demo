@@ -8,14 +8,11 @@ import {
   CrawlResult,
   PageResult,
 } from "./types";
-import {
-  encodeHTML,
-  triggerCrawlEvent,
-} from "./crawlerUtils";
+import { encodeHTML, triggerCrawlEvent } from "./crawlerUtils";
 
 import { addCrawler, stopAndRemoveCrawler } from "./crawlerRegistry";
 import { skyfireKyaTokenHook } from "./skyfireKyaTokenHook";
-import crypto from 'crypto';
+import crypto from "node:crypto";
 
 export async function crawlWebsite({
   startUrl,
@@ -48,8 +45,7 @@ export async function crawlWebsite({
   console.log(`Starting crawl for ${startUrl}...`);
   await requestQueue.addRequest({ url: startUrl, userData: { depth: 0 } });
 
-  let crawler: CheerioCrawler;
-  crawler = new CheerioCrawler({
+  const crawler: CheerioCrawler = new CheerioCrawler({
     requestQueue,
     maxRequestsPerCrawl: inputRequests,
     maxRequestRetries: 0,
@@ -65,7 +61,7 @@ export async function crawlWebsite({
     // Function that will be called for each URL to process the HTML content
     requestHandler: async ({ request, response, body, enqueueLinks }) => {
       totalTraversalSizeBytes += body.length;
-      console.log("body", body)
+      console.log("body", body);
       const rawHTMLBody = body.toString();
       const rawHTMLShortBody = rawHTMLBody.substring(0, 4000); // Pusher has a 10KB limit
       const contentBody = encodeHTML(rawHTMLShortBody);
@@ -132,7 +128,7 @@ export async function crawlWebsite({
       const responseText = body?.toString() || response?.body || "";
       const responseHeaders = response?.headers || {};
       const statusCode = response?.statusCode || "N/A";
-      
+
       const errorData = {
         message: {
           type: MessageType.ERROR,

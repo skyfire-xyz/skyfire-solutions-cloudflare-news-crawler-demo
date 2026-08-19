@@ -1,4 +1,5 @@
 import "@/styles/globals.css"
+
 import { Metadata } from "next"
 import { headers } from "next/headers"
 import { GoogleAnalytics } from "@next/third-parties/google"
@@ -13,7 +14,9 @@ import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
 
 import "react-toastify/dist/ReactToastify.css"
+
 import { getClientConfig } from "@/lib/client-config"
+
 import { CrawlingProvider } from "./contexts/CrawlingContext"
 
 export const metadata: Metadata = {

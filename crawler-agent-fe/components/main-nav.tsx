@@ -21,7 +21,7 @@ export function MainNav({ items }: MainNavProps) {
           className="invert"
         />
         <X className="size-6 text-white" />
-         <Image src="/skyfire-logo.svg" alt="logo" width={86} height={20} />
+        <Image src="/skyfire-logo.svg" alt="logo" width={86} height={20} />
         {/* <span className="text-lg font-bold text-white">webcrawler bot</span> */}
       </Link>
     </div>

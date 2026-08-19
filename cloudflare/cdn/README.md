@@ -2,11 +2,11 @@
 
 ## CDN Overview
 
-Cloudflare CDN is a global content delivery network that speeds up websites by caching content on servers worldwide, serving it from the location closest to the user, reducing latency, and improving load times. Beyond just speed, it acts as a reverse proxy, providing security features like DDoS protection and Web Application Firewall (WAF) by filtering traffic before it reaches your origin server, while also optimizing content delivery for better performance and lower bandwidth costs. 
+Cloudflare CDN is a global content delivery network that speeds up websites by caching content on servers worldwide, serving it from the location closest to the user, reducing latency, and improving load times. Beyond just speed, it acts as a reverse proxy, providing security features like DDoS protection and Web Application Firewall (WAF) by filtering traffic before it reaches your origin server, while also optimizing content delivery for better performance and lower bandwidth costs.
 
 ## Cloudflare Workers
 
-A serverless platform for building, deploying, and scaling apps across Cloudflare's global network with a single command 
+A serverless platform for building, deploying, and scaling apps across Cloudflare's global network with a single command
 
 ## Deployment Steps
 
@@ -18,7 +18,7 @@ A serverless platform for building, deploying, and scaling apps across Cloudflar
 - Select Create application
 - Choose Create Worker -> Deploy
 - Your new Worker will be deployed with a Hello World example and a temporary URL (e.g., your-worker.your-subdomain.workers.dev). You can then select Edit code to modify the script within the browser editor
-- Sample Worker code can be found [here](/cloudflare/cdn/worker.ts) 
+- Sample Worker code can be found [here](/cloudflare/cdn/worker.ts)
 - Edit `wrangler.toml` and set your environment variables under `[vars]`:
 
 ```toml
@@ -36,15 +36,17 @@ npx esbuild worker.ts --bundle --outfile=dist/worker.js --format=esm --platform=
 ```
 
 - Deploy to Cloudflare
-    -- Authenticate with Cloudflare (first time only):
-    ```sh
-    npx wrangler login
-    ```
+  -- Authenticate with Cloudflare (first time only):
 
-    -- Deploy your Worker:
-    ```sh
-    npx wrangler deploy
-    ```
+  ```sh
+  npx wrangler login
+  ```
+
+  -- Deploy your Worker:
+
+  ```sh
+  npx wrangler deploy
+  ```
 
 3. Add routing to your created Worker
 
@@ -98,7 +100,6 @@ npx wrangler login
 ```
 
 Deploy your Worker:
-
 
 ```sh
 npx wrangler deploy

@@ -4,11 +4,12 @@ import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import Pusher from "pusher-js"
 import { v4 as uuidv4 } from "uuid"
-import { MessageData } from "./types"
-import CrawlSearchLog from "./components/CrawlSearchLog";
-import NavTabs from "./components/NavTabs";
-import TopBar from "./components/TopBar"
+
+import CrawlSearchLog from "./components/CrawlSearchLog"
+import NavTabs from "./components/NavTabs"
 import PageLayout from "./components/PageLayout"
+import TopBar from "./components/TopBar"
+import { MessageData } from "./types"
 
 const channelId = uuidv4()
 
@@ -19,12 +20,12 @@ export default function App() {
   const [_isMediumScreen, setIsMediumScreen] = useState(true)
   const [selectedUrl, setSelectedUrl] = useState<string>("")
 
-  const searchParams = useSearchParams();
-  const skyfireKyaToken = searchParams.get("token") || undefined;
+  const searchParams = useSearchParams()
+  const skyfireKyaToken = searchParams.get("token") || undefined
 
   useEffect(() => {
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
-      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
     })
 
     const channel = pusher.subscribe(channelId)
@@ -60,10 +61,13 @@ export default function App() {
 
   return (
     <>
-    <TopBar selectedUrl={selectedUrl} />
-    <PageLayout>
-      <CrawlSearchLog skyfireKyaToken={skyfireKyaToken} onCloudflareUrlChange={setSelectedUrl} />
-    </PageLayout>
+      <TopBar selectedUrl={selectedUrl} />
+      <PageLayout>
+        <CrawlSearchLog
+          skyfireKyaToken={skyfireKyaToken}
+          onCloudflareUrlChange={setSelectedUrl}
+        />
+      </PageLayout>
     </>
   )
 }
