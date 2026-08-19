@@ -15,33 +15,39 @@ interface ShowTextButtonProps {
 
 // Simple HTML/XML formatter for readability
 function formatHtml(html: string): string {
-  const tab = '  ';
-  let result = '';
-  let indent = '';
+  const tab = "  "
+  let result = ""
+  let indent = ""
   html
-    .replace(/>\s*</g, '><') // Remove whitespace between tags
-    .replace(/</g, '\n<') // Newline before each tag
-    .split('\n')
-    .filter(line => line.trim())
-    .forEach(line => {
-      if (line.match(/^<\//)) indent = indent.slice(0, -tab.length);
-      result += indent + line + '\n';
-      if (line.match(/^<[^!?/][^>]*[^/]?>$/)) indent += tab;
-    });
-  return result.trim();
+    .replace(/>\s*</g, "><") // Remove whitespace between tags
+    .replace(/</g, "\n<") // Newline before each tag
+    .split("\n")
+    .filter((line) => line.trim())
+    .forEach((line) => {
+      if (line.match(/^<\//)) indent = indent.slice(0, -tab.length)
+      result += indent + line + "\n"
+      if (line.match(/^<[^!?/][^>]*[^/]?>$/)) indent += tab
+    })
+  return result.trim()
 }
 
-const ShowTextButton: React.FC<ShowTextButtonProps> = ({ request, response }) => {
+const ShowTextButton: React.FC<ShowTextButtonProps> = ({
+  request,
+  response,
+}) => {
   const [open, setOpen] = useState(false)
-  const [tab, setTab] = useState<'request' | 'response'>('response')
+  const [tab, setTab] = useState<"request" | "response">("response")
 
-  const active = tab === 'request' ? request : response
+  const active = tab === "request" ? request : response
   const activeHeaders = active?.headers || {}
-  const activeText = active?.text || ''
+  const activeText = active?.text || ""
 
   return (
     <>
-      <button className="rounded bg-gray-200 px-3 py-1 text-sm font-medium hover:bg-gray-300" onClick={() => setOpen(true)}>
+      <button
+        className="rounded bg-gray-200 px-3 py-1 text-sm font-medium hover:bg-gray-300"
+        onClick={() => setOpen(true)}
+      >
         Details
       </button>
       {open && (
@@ -51,40 +57,52 @@ const ShowTextButton: React.FC<ShowTextButtonProps> = ({ request, response }) =>
               <div className="flex gap-2 border-b border-gray-200">
                 <button
                   className={`-mb-px border-b-2 px-4 py-2 transition focus:outline-none ${
-                    tab === 'request'
-                      ? 'border-blue-600 font-semibold text-blue-600'
-                      : 'border-transparent text-gray-600 hover:border-blue-600 hover:text-blue-600'
+                    tab === "request"
+                      ? "border-blue-600 font-semibold text-blue-600"
+                      : "border-transparent text-gray-600 hover:border-blue-600 hover:text-blue-600"
                   }`}
-                  onClick={() => setTab('request')}
+                  onClick={() => setTab("request")}
                 >
                   Request
                 </button>
                 <button
                   className={`-mb-px border-b-2 px-4 py-2 transition focus:outline-none ${
-                    tab === 'response'
-                      ? 'border-blue-600 font-semibold text-blue-600'
-                      : 'border-transparent text-gray-600 hover:border-blue-600 hover:text-blue-600'
+                    tab === "response"
+                      ? "border-blue-600 font-semibold text-blue-600"
+                      : "border-transparent text-gray-600 hover:border-blue-600 hover:text-blue-600"
                   }`}
-                  onClick={() => setTab('response')}
+                  onClick={() => setTab("response")}
                 >
                   Response
                 </button>
               </div>
-              <button className="text-xl font-bold text-gray-500 hover:text-gray-700" onClick={() => setOpen(false)}>&times;</button>
+              <button
+                className="text-xl font-bold text-gray-500 hover:text-gray-700"
+                onClick={() => setOpen(false)}
+              >
+                &times;
+              </button>
             </div>
             <div className="mb-4">
               <h3 className="mb-2 text-sm font-semibold">Headers:</h3>
               <div className="overflow-hidden overflow-x-auto rounded-md bg-gray-50 p-4 font-mono text-xs text-black">
-                <pre className="whitespace-pre-wrap"><code>{JSON.stringify(activeHeaders, null, 2)}</code></pre>
+                <pre className="whitespace-pre-wrap">
+                  <code>{JSON.stringify(activeHeaders, null, 2)}</code>
+                </pre>
               </div>
             </div>
-            {tab === "response" ? <div>
-              <h3 className="mb-2 text-sm font-semibold">Body:</h3>
-              <div className="overflow-hidden overflow-x-auto rounded-md bg-white p-4 font-mono text-xs text-black">
-                <pre className="whitespace-pre-wrap"><code>{formatHtml(activeText)}</code></pre>
+            {tab === "response" ? (
+              <div>
+                <h3 className="mb-2 text-sm font-semibold">Body:</h3>
+                <div className="overflow-hidden overflow-x-auto rounded-md bg-white p-4 font-mono text-xs text-black">
+                  <pre className="whitespace-pre-wrap">
+                    <code>{formatHtml(activeText)}</code>
+                  </pre>
+                </div>
               </div>
-            </div> : <div></div>}
-            
+            ) : (
+              <div></div>
+            )}
           </div>
         </div>
       )}

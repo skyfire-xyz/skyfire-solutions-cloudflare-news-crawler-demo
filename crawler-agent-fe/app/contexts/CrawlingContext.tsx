@@ -1,13 +1,15 @@
 "use client"
 
-import { createContext, useContext, useState, ReactNode } from "react"
+import { createContext, ReactNode, useContext, useState } from "react"
 
 interface CrawlingContextType {
   isCrawling: boolean
   setIsCrawling: (value: boolean) => void
 }
 
-const CrawlingContext = createContext<CrawlingContextType | undefined>(undefined)
+const CrawlingContext = createContext<CrawlingContextType | undefined>(
+  undefined
+)
 
 export function CrawlingProvider({ children }: { children: ReactNode }) {
   const [isCrawling, setIsCrawling] = useState(false)
@@ -26,4 +28,3 @@ export function useCrawling() {
   }
   return context
 }
-
