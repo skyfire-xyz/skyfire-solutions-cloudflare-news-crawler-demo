@@ -20,7 +20,7 @@ export default function CrawlWithTokenPage() {
   const [decodedToken, setDecodedToken] = useState<any>(null)
   const [selectedUrl, setSelectedUrl] = useState<string>("")
 
-  const handleStartOver = async () => {
+  const handleStartOver = () => {
     setKyaToken(null)
     setDecodedToken(null)
   }

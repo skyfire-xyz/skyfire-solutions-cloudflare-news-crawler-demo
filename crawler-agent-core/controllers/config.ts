@@ -84,6 +84,14 @@ export const config = convict({
     default: "debug",
     env: "LOG_LEVEL",
   },
+  debugLogPageBody: {
+    doc:
+      "Log the full HTML body of every crawled page. Very verbose, and writes " +
+      "crawled page content (which may be sensitive) into logs. Diagnostics only.",
+    format: "Boolean",
+    default: false,
+    env: "DEBUG_LOG_PAGE_BODY",
+  },
   port: {
     doc: "The port to bind.",
     format: "port",

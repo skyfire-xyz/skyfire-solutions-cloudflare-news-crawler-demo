@@ -9,6 +9,7 @@ import {
   PageResult,
 } from "./types";
 import { encodeHTML, triggerCrawlEvent } from "./crawlerUtils";
+import { config } from "./config";
 
 import { addCrawler, stopAndRemoveCrawler } from "./crawlerRegistry";
 import { skyfireKyaTokenHook } from "./skyfireKyaTokenHook";
@@ -61,8 +62,12 @@ export async function crawlWebsite({
     // Function that will be called for each URL to process the HTML content
     requestHandler: async ({ request, response, body, enqueueLinks }) => {
       totalTraversalSizeBytes += body.length;
-      console.log("body", body);
       const rawHTMLBody = body.toString();
+      if (config.get("debugLogPageBody")) {
+        console.log(`body (${body.length} bytes)`, rawHTMLBody);
+      } else {
+        console.log(`body: ${body.length} bytes`);
+      }
       const rawHTMLShortBody = rawHTMLBody.substring(0, 4000); // Pusher has a 10KB limit
       const contentBody = encodeHTML(rawHTMLShortBody);
 
