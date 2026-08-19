@@ -5,7 +5,7 @@ import prettier from "eslint-config-prettier"
 import globals from "globals"
 import tseslint from "typescript-eslint"
 
-const compat = new FlatCompat({ baseDirectory: import.meta.dirname })
+const compat = new FlatCompat({ baseDirectory: new URL(".", import.meta.url).pathname })
 
 export default tseslint.config(
   {
