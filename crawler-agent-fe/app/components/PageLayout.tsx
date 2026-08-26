@@ -1,16 +1,14 @@
 // app/components/PageLayout.tsx
 interface PageLayoutProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export default function PageLayout({ children }: PageLayoutProps) {
   return (
     <div className="pl-36 pt-6">
       <div className="container mx-auto px-4 pb-8">
-        <div className="max-w-4xl">
-          {children}
-        </div>
+        <div className="max-w-4xl">{children}</div>
       </div>
     </div>
-  );
+  )
 }

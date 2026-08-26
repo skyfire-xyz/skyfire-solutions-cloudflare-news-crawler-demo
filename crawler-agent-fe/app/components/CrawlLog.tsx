@@ -1,5 +1,5 @@
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
 import { useEffect, useRef } from "react"
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
 
 import {
   AlertDescription,
@@ -11,16 +11,12 @@ import { Badge } from "@/components/ui/badge"
 import { Alert, MessageData } from "../types"
 import ShowTextButton from "./ShowTextButton"
 
-
 interface CrawlLogProps {
   log: MessageData[]
   errorMessages: Alert[]
 }
 
-export default function CrawlLog({
-  log,
-  errorMessages,
-}: CrawlLogProps) {
+export default function CrawlLog({ log, errorMessages }: CrawlLogProps) {
   const logRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -31,7 +27,10 @@ export default function CrawlLog({
 
   return (
     <div className="size-full">
-      <div ref={logRef} className="flex h-full max-h-[500px] flex-col overflow-y-auto rounded-lg border border-gray-300 bg-blue-10 p-4">
+      <div
+        ref={logRef}
+        className="bg-blue-10 flex h-full max-h-[500px] flex-col overflow-y-auto rounded-lg border border-gray-300 p-4"
+      >
         <ul className="flex-1">
           {[...log].reverse().map((entry, index) => {
             return (
@@ -47,13 +46,13 @@ export default function CrawlLog({
                     <div className="flex items-center gap-1">
                       {entry.type === "error" ? (
                         <>
-                        <Badge
-                          variant="destructive"
-                          className="px-2 py-0.5 text-xs"
-                        >
-                          ERROR
-                        </Badge>
-                          </>
+                          <Badge
+                            variant="destructive"
+                            className="px-2 py-0.5 text-xs"
+                          >
+                            ERROR
+                          </Badge>
+                        </>
                       ) : (
                         <>
                           <Badge
@@ -69,8 +68,15 @@ export default function CrawlLog({
                 </div>
                 {entry.request.url && (
                   <ShowTextButton
-                    request={{ headers: entry.request.headers, url: entry.request.url }}
-                    response={{ headers: entry.response.headers, text: entry.response.text, url: entry.response.url }}
+                    request={{
+                      headers: entry.request.headers,
+                      url: entry.request.url,
+                    }}
+                    response={{
+                      headers: entry.response.headers,
+                      text: entry.response.text,
+                      url: entry.response.url,
+                    }}
                   />
                 )}
               </li>

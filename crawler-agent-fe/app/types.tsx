@@ -2,8 +2,8 @@ export const DEFAULT_DEPTH = "2"
 
 export interface MessageData {
   type: string
-  request: {url: string, headers: Record<string,string>,  method: string}, 
-  response: {text: string, url: string, headers: Record<string,string>}, 
+  request: { url: string; headers: Record<string, string>; method: string }
+  response: { text: string; url: string; headers: Record<string, string> }
 }
 
 export enum AlertType {

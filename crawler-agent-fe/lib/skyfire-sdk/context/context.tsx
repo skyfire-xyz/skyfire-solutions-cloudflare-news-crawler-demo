@@ -1,8 +1,8 @@
 "use client"
 
 import React, {
-  ReactNode,
   createContext,
+  ReactNode,
   useContext,
   useEffect,
   useMemo,
@@ -12,11 +12,11 @@ import React, {
 import axios, { AxiosInstance, AxiosResponse, isAxiosError } from "axios"
 
 import {
-  SkyfireAction,
   addResponse,
   clearResponses,
   loading,
   replaceResponse,
+  SkyfireAction,
   updateError,
   updateSkyfireAPIKey,
   updateSkyfireClaims,
@@ -136,7 +136,6 @@ export const SkyfireProvider: React.FC<{ children: ReactNode }> = ({
   }, [state.localAPIKey])
 
   useEffect(() => {
-
     const tosAgreed = localStorage.getItem("tosAgreed")
     if (tosAgreed !== null) {
       dispatch(updateTOSAgreement(JSON.parse(tosAgreed)))

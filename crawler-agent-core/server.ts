@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 const app: Express = express();
 
 dotenv.config();
-const port = process.env.PORT;
+const port = process.env.PORT ?? 8080;
 
 import crawlerRoute from "./routes/crawlerRouter";
 import tokenRoute from "./routes/tokenRoute";

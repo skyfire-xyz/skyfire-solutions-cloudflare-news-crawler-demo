@@ -1,19 +1,20 @@
 "use client"
 
-import { useRouter, usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
+
 import { useCrawling } from "../contexts/CrawlingContext"
 
 const tabs = [
-  { 
-    label: "Crawl without Token", 
+  {
+    label: "Crawl without Token",
     route: "/",
   },
-  { 
-    label: "Crawl with Token", 
+  {
+    label: "Crawl with Token",
     route: "/token",
   },
-  { 
-    label: "Do It Yourself", 
+  {
+    label: "Do It Yourself",
     route: "/diy",
   },
 ]
@@ -24,7 +25,7 @@ const NavTabs: React.FC = () => {
   const { isCrawling } = useCrawling()
 
   return (
-    <div className="inline-flex rounded-lg bg-blue-10 p-1 shadow-sm border border-gray-200">
+    <div className="bg-blue-10 inline-flex rounded-lg border border-gray-200 p-1 shadow-sm">
       {tabs.map((tab) => {
         const isActive = pathname === tab.route
         return (

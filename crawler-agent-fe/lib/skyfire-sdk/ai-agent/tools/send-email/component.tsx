@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { AlertCircle, CheckCircle } from "lucide-react"
+import { CircleAlert, CircleCheckBig } from "lucide-react"
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
@@ -19,9 +19,9 @@ export const Component: React.FC<{
       className="mb-4"
     >
       {result.success ? (
-        <CheckCircle className="size-4" />
+        <CircleCheckBig className="size-4" />
       ) : (
-        <AlertCircle className="size-4" />
+        <CircleAlert className="size-4" />
       )}
       <AlertTitle>{result.success ? "Success" : "Error"}</AlertTitle>
       <AlertDescription>

@@ -2,7 +2,6 @@ import Pusher from "pusher";
 import { config } from "./config";
 import { MessageType } from "./types";
 
-
 export const pusher = new Pusher({
   appId: config.get("pusher.appId"),
   key: config.get("pusher.key"),

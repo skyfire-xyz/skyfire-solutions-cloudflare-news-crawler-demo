@@ -1,8 +1,7 @@
 /// <reference types="@cloudflare/workers-types" />
 
 import { jwtVerify, createRemoteJWKSet, errors as joseErrors } from "jose";
-
-var validator = require("validator");
+import validator from "validator";
 
 type Env = {
   BACKEND_API_URL: string;
@@ -15,7 +14,7 @@ export default {
   async fetch(
     request: Request,
     env: Env,
-    ctx: ExecutionContext,
+    _ctx: ExecutionContext,
   ): Promise<Response> {
     // Environment variables (set these in your Worker environment)
     const BACKEND_API_URL = env.BACKEND_API_URL;

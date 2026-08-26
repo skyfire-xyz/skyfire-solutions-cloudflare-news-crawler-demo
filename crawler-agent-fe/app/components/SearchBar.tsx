@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import axios from "axios"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -14,8 +15,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { useCrawling } from "../contexts/CrawlingContext"
 
+import { useCrawling } from "../contexts/CrawlingContext"
 import { Alert, AlertType } from "../types"
 
 interface SearchBarProps {
@@ -47,10 +48,26 @@ interface Suggestion {
 
 const suggestions: Suggestion[] = [
   { url: "https://skyfire.xyz", name: "Skyfire", type: "Unprotected" },
-  { url: "https://mock-news-cloudflare-api-gateway-demo.skyfire.xyz/", name: "MockNews (Cloudflare API Gateway)", type: "Protected"},
-  { url: "https://mock-news-cloudflare-api-gateway-waf-demo.skyfire.xyz/", name: "MockNews (Cloudflare API Gateway + WAF)", type: "Protected"},
-  { url: "https://mock-news-cloudflare-cdn-demo.skyfire.xyz/", name: "MockNews (Cloudflare CDN)", type: "Protected"},
-  { url: "https://mock-news-cloudflare-cdn-waf1-demo.skyfire.xyz/", name: "MockNews (Cloudflare CDN + WAF)", type: "Protected"}
+  {
+    url: "https://mock-news-cloudflare-api-gateway-demo.skyfire.xyz/",
+    name: "MockNews (Cloudflare API Gateway)",
+    type: "Protected",
+  },
+  {
+    url: "https://mock-news-cloudflare-api-gateway-waf-demo.skyfire.xyz/",
+    name: "MockNews (Cloudflare API Gateway + WAF)",
+    type: "Protected",
+  },
+  {
+    url: "https://mock-news-cloudflare-cdn-demo.skyfire.xyz/",
+    name: "MockNews (Cloudflare CDN)",
+    type: "Protected",
+  },
+  {
+    url: "https://mock-news-cloudflare-cdn-waf1-demo.skyfire.xyz/",
+    name: "MockNews (Cloudflare CDN + WAF)",
+    type: "Protected",
+  },
 ]
 
 const SearchBar: React.FC<SearchBarProps> = ({
@@ -77,11 +94,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const selectedUrl = form.watch("url")
 
   useEffect(() => {
-      if (typeof onCloudflareUrlChange === "function") {
-        onCloudflareUrlChange(selectedUrl)
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedUrl])
+    if (typeof onCloudflareUrlChange === "function") {
+      onCloudflareUrlChange(selectedUrl)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedUrl])
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!isFocused || suggestions.length === 0) return
@@ -119,7 +136,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
       setIsLoading(true)
       setAlerts([])
 
-      const crawlerEndpoint = `${process.env.NEXT_PUBLIC_SERVICE_BASE_URL}/crawl` 
+      const crawlerEndpoint = `${process.env.NEXT_PUBLIC_SERVICE_BASE_URL}/crawl`
       const requestBody = {
         startUrl: data.url,
         channelId: channelId,
@@ -134,11 +151,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
         "content-type": "application/json",
       }
 
-     
-        await axios.post(crawlerEndpoint, requestBody, { headers })
+      await axios.post(crawlerEndpoint, requestBody, { headers })
     } catch (err) {
       if (axios.isAxiosError(err)) {
-       if (err.message === "Network Error") {
+        if (err.message === "Network Error") {
           setAlerts([
             {
               type: AlertType.NETWORK,
@@ -162,14 +178,17 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   const onStop = async () => {
     try {
-      setIsLoading(false); 
-      await axios.post(`${process.env.NEXT_PUBLIC_SERVICE_BASE_URL}/crawl/stop`, {channelId: channelId});
+      setIsLoading(false)
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVICE_BASE_URL}/crawl/stop`,
+        { channelId: channelId }
+      )
       // setAlerts([{ type: AlertType.INFO, message: "Crawling stopped." }]);
     } catch (err) {
       // setAlerts([{ type: AlertType.INVALID, message: "Failed to stop crawling." }]);
-      console.error("Stop error:", err);
+      console.error("Stop error:", err)
     }
-  };
+  }
 
   return (
     <Form {...form}>
@@ -214,8 +233,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
                                 <div className="flex min-w-0 flex-1 items-center gap-3">
                                   <span
                                     className={`rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-800 ${
-                                      suggestion.type === "Protected" 
-                                        ? "mr-4" 
+                                      suggestion.type === "Protected"
+                                        ? "mr-4"
                                         : ""
                                     }`}
                                   >
@@ -253,17 +272,18 @@ const SearchBar: React.FC<SearchBarProps> = ({
           >
             {isLoading ? "Crawling..." : "Crawl"}
           </Button>
-          {isLoading ? 
-          <Button
-            type="button"
-            onClick={() => form.handleSubmit(onStop)()}
-            disabled={!isLoading}
-            variant="secondary"
-          >
-            Stop Crawling
-          </Button>
-          : <></>
-          }
+          {isLoading ? (
+            <Button
+              type="button"
+              onClick={() => form.handleSubmit(onStop)()}
+              disabled={!isLoading}
+              variant="secondary"
+            >
+              Stop Crawling
+            </Button>
+          ) : (
+            <></>
+          )}
         </div>
       </form>
     </Form>

@@ -54,7 +54,7 @@ export const skyfireReducer = (
         ...state,
         error: action.payload,
       }
-    case ActionType.ADD_RESPONSE:
+    case ActionType.ADD_RESPONSE: {
       const isDuplicate = state.responses.some(
         (response) => response.config.url === action.payload.config.url
       )
@@ -65,7 +65,8 @@ export const skyfireReducer = (
         }
       }
       return state
-    case ActionType.REPLACE_RESPONSE:
+    }
+    case ActionType.REPLACE_RESPONSE: {
       const existingResponseIndex = state.responses.findIndex(
         (resp) =>
           resp.config.metadataForAgent?.title ===
@@ -84,6 +85,7 @@ export const skyfireReducer = (
           responses: [...state.responses, action.payload],
         }
       }
+    }
     case ActionType.CLEAR_RESPONSES:
       return {
         ...state,

@@ -6,11 +6,11 @@ Cloudflare API Shield enables you to use Cloudflare as your API Gateway, deliver
 
 ## Cloudflare Workers
 
-A serverless platform for building, deploying, and scaling apps across Cloudflare's global network with a single command 
+A serverless platform for building, deploying, and scaling apps across Cloudflare's global network with a single command
 
 ## Deployment Steps
 
-1. Create a API Gateway 
+1. Create a API Gateway
 
 - Log in to your Cloudflare dashboard and select your account and domain.
 - Navigate to Security -> Web Assets.
@@ -21,8 +21,8 @@ A serverless platform for building, deploying, and scaling apps across Cloudflar
 - Log in to your Cloudflare account and navigate to the Workers & Pages section.
 - Select Create application.
 - Choose Create Worker -> Deploy.
-- Your new Worker will be deployed with a Hello World example and a temporary URL (e.g., your-worker.your-subdomain.workers.dev). You can then select Edit code to modify the script within the browser editor. 
-- Sample Worker code can be found [here](/cloudflare/api-gateway/worker.ts) 
+- Your new Worker will be deployed with a Hello World example and a temporary URL (e.g., your-worker.your-subdomain.workers.dev). You can then select Edit code to modify the script within the browser editor.
+- Sample Worker code can be found [here](/cloudflare/api-gateway/worker.ts)
 - Edit `wrangler.toml` and set your environment variables under `[vars]`:
 
 ```toml
@@ -40,15 +40,17 @@ npx esbuild worker.ts --bundle --outfile=dist/worker.js --format=esm --platform=
 ```
 
 - Deploy to Cloudflare
-    -- Authenticate with Cloudflare (first time only):
-    ```sh
-    npx wrangler login
-    ```
+  -- Authenticate with Cloudflare (first time only):
 
-    -- Deploy your Worker:
-    ```sh
-    npx wrangler deploy
-    ```
+  ```sh
+  npx wrangler login
+  ```
+
+  -- Deploy your Worker:
+
+  ```sh
+  npx wrangler deploy
+  ```
 
 3. Associate the Worker with the created API Gateway
 
@@ -58,7 +60,7 @@ npx esbuild worker.ts --bundle --outfile=dist/worker.js --format=esm --platform=
 ![add or edit route](/cloudflare/static/api-gateway-route.png)
 
 - Enter the target URL of your deployed Worker (e.g., your-worker.your-subdomain.workers.dev) in the target field.
-- Select Deploy route to link the API Gateway endpoint to your Worker. 
+- Select Deploy route to link the API Gateway endpoint to your Worker.
 
 ## Setup Instructions
 
@@ -104,7 +106,6 @@ npx wrangler login
 ```
 
 Deploy your Worker:
-
 
 ```sh
 npx wrangler deploy

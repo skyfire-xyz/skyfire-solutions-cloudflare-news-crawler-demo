@@ -5,7 +5,7 @@ import { triggerEndCrawlMessage } from "../controllers/crawlerUtils";
 import { stopAndRemoveCrawler } from "../controllers/crawlerRegistry";
 
 router.route("/").post(async (req, res) => {
-  let crawlerInfo = await crawlWebsite(req.body);
+  const crawlerInfo = await crawlWebsite(req.body);
   await triggerEndCrawlMessage({
     totalPagesCrawled: crawlerInfo.results.length,
     totalTimeSeconds: crawlerInfo.totalTimeSeconds,

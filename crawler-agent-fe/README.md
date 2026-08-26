@@ -12,17 +12,19 @@ Here is a video for the running crawler demo:
 ### Pre-requisites
 
 1. Approved Seller Service with Seller Skyfire API Key:
+
 - Follow the [Skyfire Platform Setup Guide](https://docs.skyfire.xyz/docs/introduction) to create a seller account and seller service.
 
 2. Pusher Credentials:
+
 - Create a Pusher Account and App:
-      - Go to the Pusher website and create a new account or sign in to your existing one. 
-      - Navigate to the Pusher Channels dashboard and create a new app. 
-      - Give your app a name and select a cluster (region) closest to your users to minimize latency. 
+  - Go to the Pusher website and create a new account or sign in to your existing one.
+  - Navigate to the Pusher Channels dashboard and create a new app.
+  - Give your app a name and select a cluster (region) closest to your users to minimize latency.
 - Get Your Pusher Credentials:
-      - After creating the app, find and click on it in the dashboard. 
-      - Go to the "App Keys" tab to find your app_id, key, secret, and cluster. 
-      - Store these credentials securely, as they will be needed to configure your application. 
+  - After creating the app, find and click on it in the dashboard.
+  - Go to the "App Keys" tab to find your app_id, key, secret, and cluster.
+  - Store these credentials securely, as they will be needed to configure your application.
 
 ### Installation Steps
 
