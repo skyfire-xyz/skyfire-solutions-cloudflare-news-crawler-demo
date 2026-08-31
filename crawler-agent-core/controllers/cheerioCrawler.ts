@@ -1,4 +1,4 @@
-import { CheerioCrawler, RequestQueue } from "crawlee";
+import { CheerioCrawler } from "crawlee";
 import {
   DEFAULT_DEPTH,
   DEFAULT_REQUESTS,
@@ -11,7 +11,12 @@ import {
 import { encodeHTML, triggerCrawlEvent } from "./crawlerUtils";
 import { config } from "./config";
 
-import { addCrawler, stopAndRemoveCrawler } from "./crawlerRegistry";
+import {
+  addCrawler,
+  removeCrawler,
+  stopAndRemoveCrawler,
+} from "./crawlerRegistry";
+import { openScopedRequestQueue } from "./scopedRequestQueue";
 import { skyfireKyaTokenHook } from "./skyfireKyaTokenHook";
 import crypto from "node:crypto";
 
@@ -38,7 +43,8 @@ export async function crawlWebsite({
   inputRequests = inputRequests > MAX_REQUESTS ? MAX_REQUESTS : inputRequests;
   inputDepth = inputDepth > MAX_DEPTH ? MAX_DEPTH : inputDepth;
   const results: PageResult[] = [];
-  const requestQueue = await RequestQueue.open(crypto.randomUUID());
+  const { requestQueue, release: releaseRequestQueue } =
+    await openScopedRequestQueue(crypto.randomUUID());
   const startTimeOverall = Date.now();
   let totalTraversalSizeBytes = 0;
 
@@ -54,10 +60,12 @@ export async function crawlWebsite({
     navigationTimeoutSecs: 5,
     additionalMimeTypes: ["application/json"],
     preNavigationHooks: [skyfireKyaTokenHook(skyfireKyaToken)],
-    sessionPoolOptions: {
-      blockedStatusCodes: [],
-    },
+    useSessionPool: false,
+    persistCookiesPerSession: false,
     retryOnBlocked: false,
+    statisticsOptions: {
+      persistenceOptions: { enable: false },
+    },
 
     // Function that will be called for each URL to process the HTML content
     requestHandler: async ({ request, response, body, enqueueLinks }) => {
@@ -93,7 +101,9 @@ export async function crawlWebsite({
           console.error("Error triggering Pusher event:", error);
         });
         // Stop the crawler immediately
-        stopAndRemoveCrawler(channelId, "error response");
+        stopAndRemoveCrawler(channelId, "error response").catch((error) => {
+          console.error("Error tearing down crawler:", error);
+        });
         return;
       }
 
@@ -162,10 +172,13 @@ export async function crawlWebsite({
 
   addCrawler(channelId, crawler); // Add the crawler to the running crawlers registry
 
-  await crawler.run(); // Start the crawler
+  try {
+    await crawler.run(); // Start the crawler
+  } finally {
+    removeCrawler(channelId);
+    await releaseRequestQueue();
+  }
 
-  stopAndRemoveCrawler(channelId, "finished execution"); // Remove the crawler from the running crawlers registry when finished
-  await requestQueue.drop();
   const totalTimeSeconds = (Date.now() - startTimeOverall) / 1000;
   console.log(`Crawler finished. channelId: ${channelId}`);
   console.log(`Total crawl time: ${totalTimeSeconds}`);

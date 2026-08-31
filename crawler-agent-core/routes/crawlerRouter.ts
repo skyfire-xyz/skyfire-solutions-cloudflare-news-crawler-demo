@@ -17,7 +17,7 @@ router.route("/").post(async (req, res) => {
 });
 
 router.route("/stop").post(async (req, res) => {
-  stopAndRemoveCrawler(req.body.channelId, "user request");
+  await stopAndRemoveCrawler(req.body.channelId, "user request");
   res.status(200).send("OK");
 });
 
