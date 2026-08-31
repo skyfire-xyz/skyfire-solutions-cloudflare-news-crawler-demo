@@ -47,135 +47,139 @@ export async function crawlWebsite({
     await openScopedRequestQueue(crypto.randomUUID());
   const startTimeOverall = Date.now();
   let totalTraversalSizeBytes = 0;
-
-  requestQueue.timeoutSecs = 5;
-  console.log(`Starting crawl for ${startUrl}...`);
-  await requestQueue.addRequest({ url: startUrl, userData: { depth: 0 } });
-
-  const crawler: CheerioCrawler = new CheerioCrawler({
-    requestQueue,
-    maxRequestsPerCrawl: inputRequests,
-    maxRequestRetries: 0,
-    requestHandlerTimeoutSecs: 5,
-    navigationTimeoutSecs: 5,
-    additionalMimeTypes: ["application/json"],
-    preNavigationHooks: [skyfireKyaTokenHook(skyfireKyaToken)],
-    useSessionPool: false,
-    persistCookiesPerSession: false,
-    retryOnBlocked: false,
-    statisticsOptions: {
-      persistenceOptions: { enable: false },
-    },
-
-    // Function that will be called for each URL to process the HTML content
-    requestHandler: async ({ request, response, body, enqueueLinks }) => {
-      totalTraversalSizeBytes += body.length;
-      const rawHTMLBody = body.toString();
-      if (config.get("debugLogPageBody")) {
-        console.log(`body (${body.length} bytes)`, rawHTMLBody);
-      } else {
-        console.log(`body: ${body.length} bytes`);
-      }
-      const rawHTMLShortBody = rawHTMLBody.substring(0, 4000); // Pusher has a 10KB limit
-      const contentBody = encodeHTML(rawHTMLShortBody);
-
-      if (response?.statusCode !== 200) {
-        await triggerCrawlEvent(
-          {
-            message: {
-              type: MessageType.ERROR,
-              request: {
-                url: `Request to ${request.url} failed. Status: ${response.statusCode}`,
-                headers: request.headers,
-                method: request.method,
-              },
-              response: {
-                text: `${contentBody}`,
-                url: request.url,
-                headers: response.headers,
-              },
-            },
-          },
-          channelId,
-        ).catch((error) => {
-          console.error("Error triggering Pusher event:", error);
-        });
-        // Stop the crawler immediately
-        stopAndRemoveCrawler(channelId, "error response").catch((error) => {
-          console.error("Error tearing down crawler:", error);
-        });
-        return;
-      }
-
-      const {
-        url,
-        userData: { depth },
-      } = request;
-
-      const rawHTML = body.toString();
-      const rawHTMLShort = rawHTML.substring(0, 4000); // Pusher has a 10KB limit
-      const content = encodeHTML(rawHTMLShort);
-      const messageData = {
-        message: {
-          type: MessageType.PAGE,
-          request: {
-            url: url,
-            headers: request.headers,
-            method: request.method.toString(),
-          },
-          response: { text: content, url: url, headers: response.headers },
-          depth,
-        },
-      };
-      results.push(messageData.message);
-
-      await triggerCrawlEvent(messageData, channelId);
-
-      if (depth < inputDepth) {
-        await enqueueLinks({
-          strategy: "same-domain",
-        });
-      }
-    },
-
-    failedRequestHandler({ request, response, body, error }) {
-      // Handle cases where response is undefined (timeouts, connection errors, etc.)
-      const responseText = body?.toString() || response?.body || "";
-      const responseHeaders = response?.headers || {};
-      const statusCode = response?.statusCode || "N/A";
-
-      const errorData = {
-        message: {
-          type: MessageType.ERROR,
-          response: {
-            text: responseText,
-            url: request.url,
-            headers: responseHeaders,
-          },
-          request: {
-            url: `Request to ${request.url} failed. Status: ${statusCode}`,
-            headers: request.headers || {},
-            method: request.method || "GET",
-          },
-        },
-      };
-      triggerCrawlEvent(errorData, channelId).catch((error) => {
-        console.error("Error triggering Pusher event:", error);
-      });
-      console.error("Failed request error:", error);
-    },
-
-    // Limit the concurrency to avoid overwhelming the server
-    minConcurrency: 1,
-    maxConcurrency: 1,
-  });
-
-  addCrawler(channelId, crawler); // Add the crawler to the running crawlers registry
+  let crawlerRegistered = false;
 
   try {
+    requestQueue.timeoutSecs = 5;
+    console.log(`Starting crawl for ${startUrl}...`);
+    await requestQueue.addRequest({ url: startUrl, userData: { depth: 0 } });
+
+    const crawler: CheerioCrawler = new CheerioCrawler({
+      requestQueue,
+      maxRequestsPerCrawl: inputRequests,
+      maxRequestRetries: 0,
+      requestHandlerTimeoutSecs: 5,
+      navigationTimeoutSecs: 5,
+      additionalMimeTypes: ["application/json"],
+      preNavigationHooks: [skyfireKyaTokenHook(skyfireKyaToken)],
+      useSessionPool: false,
+      persistCookiesPerSession: false,
+      retryOnBlocked: false,
+      statisticsOptions: {
+        persistenceOptions: { enable: false },
+      },
+
+      // Function that will be called for each URL to process the HTML content
+      requestHandler: async ({ request, response, body, enqueueLinks }) => {
+        totalTraversalSizeBytes += body.length;
+        const rawHTMLBody = body.toString();
+        if (config.get("debugLogPageBody")) {
+          console.log(`body (${body.length} bytes)`, rawHTMLBody);
+        } else {
+          console.log(`body: ${body.length} bytes`);
+        }
+        const rawHTMLShortBody = rawHTMLBody.substring(0, 4000); // Pusher has a 10KB limit
+        const contentBody = encodeHTML(rawHTMLShortBody);
+
+        if (response?.statusCode !== 200) {
+          await triggerCrawlEvent(
+            {
+              message: {
+                type: MessageType.ERROR,
+                request: {
+                  url: `Request to ${request.url} failed. Status: ${response.statusCode}`,
+                  headers: request.headers,
+                  method: request.method,
+                },
+                response: {
+                  text: `${contentBody}`,
+                  url: request.url,
+                  headers: response.headers,
+                },
+              },
+            },
+            channelId,
+          ).catch((error) => {
+            console.error("Error triggering Pusher event:", error);
+          });
+          // Stop the crawler immediately
+          stopAndRemoveCrawler(channelId, "error response").catch((error) => {
+            console.error("Error tearing down crawler:", error);
+          });
+          return;
+        }
+
+        const {
+          url,
+          userData: { depth },
+        } = request;
+
+        const rawHTML = body.toString();
+        const rawHTMLShort = rawHTML.substring(0, 4000); // Pusher has a 10KB limit
+        const content = encodeHTML(rawHTMLShort);
+        const messageData = {
+          message: {
+            type: MessageType.PAGE,
+            request: {
+              url: url,
+              headers: request.headers,
+              method: request.method.toString(),
+            },
+            response: { text: content, url: url, headers: response.headers },
+            depth,
+          },
+        };
+        results.push(messageData.message);
+
+        await triggerCrawlEvent(messageData, channelId);
+
+        if (depth < inputDepth) {
+          await enqueueLinks({
+            strategy: "same-domain",
+          });
+        }
+      },
+
+      failedRequestHandler({ request, response, body, error }) {
+        // Handle cases where response is undefined (timeouts, connection errors, etc.)
+        const responseText = body?.toString() || response?.body || "";
+        const responseHeaders = response?.headers || {};
+        const statusCode = response?.statusCode || "N/A";
+
+        const errorData = {
+          message: {
+            type: MessageType.ERROR,
+            response: {
+              text: responseText,
+              url: request.url,
+              headers: responseHeaders,
+            },
+            request: {
+              url: `Request to ${request.url} failed. Status: ${statusCode}`,
+              headers: request.headers || {},
+              method: request.method || "GET",
+            },
+          },
+        };
+        triggerCrawlEvent(errorData, channelId).catch((error) => {
+          console.error("Error triggering Pusher event:", error);
+        });
+        console.error("Failed request error:", error);
+      },
+
+      // Limit the concurrency to avoid overwhelming the server
+      minConcurrency: 1,
+      maxConcurrency: 1,
+    });
+
+    addCrawler(channelId, crawler); // Add the crawler to the running crawlers registry
+    crawlerRegistered = true;
+
     await crawler.run(); // Start the crawler
   } finally {
-    removeCrawler(channelId);
+    if (crawlerRegistered) {
+      removeCrawler(channelId);
+    }
     await releaseRequestQueue();
   }
 
