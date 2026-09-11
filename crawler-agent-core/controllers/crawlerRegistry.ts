@@ -10,12 +10,16 @@ export function getCurrentRunningCrawler(channelId: string) {
   return runningCrawlers[`${channelId}`];
 }
 
+export function removeCrawler(channelId: string) {
+  delete runningCrawlers[`${channelId}`];
+}
+
 export function stopAndRemoveCrawler(channelId: string, _errorMsg: string) {
   const crawler = getCurrentRunningCrawler(channelId);
   if (crawler) {
-    crawler.teardown();
     delete runningCrawlers[`${channelId}`];
-  } else {
-    console.log("Crawler not found for channelId:", channelId);
+    return crawler.teardown();
   }
+  console.log("Crawler not found for channelId:", channelId);
+  return Promise.resolve();
 }
