@@ -7,25 +7,7 @@ import { jwtDecode } from "jwt-decode"
 import CrawlSearchLog from "../components/CrawlSearchLog"
 import PageLayout from "../components/PageLayout"
 import TopBar from "../components/TopBar"
-
-const CLOUDFLARE_URLS = [
-  {
-    name: "API Gateway",
-    url: "https://mock-news-cloudflare-api-gateway-demo.skyfire.xyz/",
-  },
-  {
-    name: "API Gateway + WAF",
-    url: "https://mock-news-cloudflare-api-gateway-waf-demo.skyfire.xyz/",
-  },
-  {
-    name: "CDN",
-    url: "https://mock-news-cloudflare-cdn-demo.skyfire.xyz/",
-  },
-  {
-    name: "CDN + WAF",
-    url: "https://mock-news-cloudflare-cdn-waf1-demo.skyfire.xyz/",
-  },
-]
+import UrlSelector from "../components/UrlSelector"
 
 export default function CrawlWithTokenPage() {
   const [userApiKey, setUserApiKey] = useState<string>("")
@@ -34,9 +16,6 @@ export default function CrawlWithTokenPage() {
   const [kyaToken, setKyaToken] = useState<string | null>("")
   const [decodedToken, setDecodedToken] = useState<any>(null)
   const [selectedUrl, setSelectedUrl] = useState<string>("")
-  const [sellerDomainUrl, setSellerDomainUrl] = useState<string>(
-    CLOUDFLARE_URLS[0].url
-  )
 
   const handleStartOver = () => {
     setKyaToken(null)
@@ -48,7 +27,7 @@ export default function CrawlWithTokenPage() {
       const response: AxiosResponse<{ token: string; error: string }> =
         await axios.post(`${process.env.NEXT_PUBLIC_SERVICE_BASE_URL}/token`, {
           userApiKey: userApiKey,
-          sellerDomain: new URL(sellerDomainUrl).hostname,
+          sellerDomain: new URL(selectedUrl).hostname,
         })
       if (response.data.error) {
         setError(response.data.error)
@@ -140,25 +119,14 @@ export default function CrawlWithTokenPage() {
 
             <div className="mb-6">
               <div className="mt-6 flex w-full flex-col gap-4 rounded-xl border border-gray-200 bg-white p-6 shadow-md">
-                <label
-                  htmlFor="seller-domain-url"
-                  className="text-sm text-gray-500"
-                >
-                  Seller Domain:
+                <label className="text-sm text-gray-500">
+                  Select website to crawl:
                 </label>
-                <select
-                  id="seller-domain-url"
-                  value={sellerDomainUrl}
-                  onChange={(e) => setSellerDomainUrl(e.target.value)}
+                <UrlSelector
+                  value={selectedUrl}
+                  onChange={setSelectedUrl}
                   disabled={!!kyaToken}
-                  className="h-10 rounded-md border border-gray-300 bg-white px-3 text-base focus:outline-none"
-                >
-                  {CLOUDFLARE_URLS.map((item) => (
-                    <option key={item.url} value={item.url}>
-                      MockNews (Cloudflare {item.name})
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
             </div>
 
@@ -216,12 +184,12 @@ export default function CrawlWithTokenPage() {
 
                 <div className="mt-8">
                   <h2 className="mb-4 text-xl font-semibold text-gray-900">
-                    Step 3: Select website to crawl
+                    Step 3: Crawl the selected website
                   </h2>
                   <div className="mt-6">
                     <CrawlSearchLog
                       skyfireKyaToken={kyaToken}
-                      onCloudflareUrlChange={setSelectedUrl}
+                      preselectedUrl={selectedUrl}
                     />
                   </div>
                 </div>
@@ -231,6 +199,7 @@ export default function CrawlWithTokenPage() {
                 <button
                   className="w-fit rounded bg-black px-6 py-2 font-semibold text-white transition hover:bg-gray-800 disabled:opacity-60"
                   onClick={handleCreateToken}
+                  disabled={!selectedUrl}
                 >
                   Create Token
                 </button>
