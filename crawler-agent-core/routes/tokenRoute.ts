@@ -10,7 +10,7 @@ const getEpochPlus24Hours = () => {
 };
 
 router.route("/").post(async (req, res) => {
-  const { userApiKey } = req.body;
+  const { userApiKey, sellerDomain } = req.body;
   try {
     const response = await fetch(
       `${process.env.SKYFIRE_API_BASE_URL}/api/v1/tokens`,
@@ -26,7 +26,7 @@ router.route("/").post(async (req, res) => {
         body: JSON.stringify({
           type: "kya",
           buyerTag: process.env.BUYER_TAG,
-          sellerServiceId: process.env.SELLER_SERVICE_ID,
+          sellerDomainOrUrl: sellerDomain,
           expiresAt: getEpochPlus24Hours(),
         }),
       },

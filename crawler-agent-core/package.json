@@ -8,7 +8,7 @@
     "prestart": "npm run build",
     "start": "node dist/server.js",
     "preserve": "npm run build",
-    "serve": "concurrently \"tsc -w\" \"nodemon dist/server.js\"",
+    "serve": "concurrently \"tsc -w\" \"nodemon --watch dist --ignore storage --verbose dist/server.js\"",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",

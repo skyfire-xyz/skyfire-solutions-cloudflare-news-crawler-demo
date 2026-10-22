@@ -8,6 +8,7 @@ type Env = {
   OFFICIAL_SKYFIRE_JWT_ALGORITHM: string;
   OFFICIAL_SKYFIRE_JWT_ISSUER: string;
   MOCK_NEWS_WEBSITE: string;
+  SELLER_DOMAIN: string;
 };
 
 // Cloudflare Workers entry point
@@ -161,6 +162,20 @@ export default {
         console.log("Missing aid claim");
         return new Response(
           JSON.stringify({ error: "Missing required claim: aid" }),
+          {
+            status: 401,
+            headers: { "content-type": "application/json" },
+          },
+        );
+      }
+
+      // Validate sdm claim matches the configured seller domain
+      if (payload.sdm !== env.SELLER_DOMAIN) {
+        console.log("Invalid sdm:", payload.sdm);
+        return new Response(
+          JSON.stringify({
+            error: "Invalid sdm - does not match seller domain",
+          }),
           {
             status: 401,
             headers: { "content-type": "application/json" },
