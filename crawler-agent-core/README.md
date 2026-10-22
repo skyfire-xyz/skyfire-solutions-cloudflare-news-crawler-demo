@@ -33,7 +33,6 @@ If you would like to run this app locally -
    PUSHER_CLUSTER=<your_pusher_cluster>
    PUSHER_USE_TLS=true
    BUYER_TAG=crawl-demo-au3ctqolmc5
-   SELLER_SERVICE_ID=<your_skyfire_seller_service_id>
    SKYFIRE_API_KEY=<your_skyfire_api_key>
    SKYFIRE_API_BASE_URL=https://api.skyfire.xyz
    ```
