@@ -149,6 +149,30 @@ export default {
           },
         );
       }
+
+      // Validate apd claim exists (required for kya and kya-pay tokens)
+      if (payload.apd === undefined || payload.apd === null) {
+        console.log("Missing apd claim");
+        return new Response(
+          JSON.stringify({ error: "Missing required claim: apd" }),
+          {
+            status: 401,
+            headers: { "content-type": "application/json" },
+          },
+        );
+      }
+
+      // Validate aid claim exists (required for kya and kya-pay tokens)
+      if (payload.aid === undefined || payload.aid === null) {
+        console.log("Missing aid claim");
+        return new Response(
+          JSON.stringify({ error: "Missing required claim: aid" }),
+          {
+            status: 401,
+            headers: { "content-type": "application/json" },
+          },
+        );
+      }
     }
 
     return await fetch(ORIGIN_URL);
