@@ -101,8 +101,7 @@ export default function DIYPage() {
 }'`
 
   const step4Curl = `curl "${selectedCloudflare}" \\
-  --header 'kyapay-token: KYA_TOKEN' \\
-  --header 'skyfire-pay-id: KYA_TOKEN'`
+  --header 'kyapay-token: KYA_TOKEN'`
 
   return (
     <>

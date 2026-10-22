@@ -22,11 +22,8 @@ export default {
     const JWKS_URL = `${BACKEND_API_URL}/.well-known/jwks.json`;
     const JWT_ISSUER = env.OFFICIAL_SKYFIRE_JWT_ISSUER;
 
-    // Authentication with kyapay-token or skyfire-pay-id header
-    const skyfireToken =
-      request.headers.get("kyapay-token") ||
-      request.headers.get("skyfire-pay-id") ||
-      "";
+    // Authentication with kyapay-token header
+    const skyfireToken = request.headers.get("kyapay-token") || "";
     if (!skyfireToken) {
       return new Response(
         JSON.stringify({

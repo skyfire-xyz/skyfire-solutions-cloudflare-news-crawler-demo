@@ -70,7 +70,7 @@ npx esbuild worker.ts --bundle --outfile=dist/worker.js --format=esm --platform=
 
 - Log in to your Cloudflare account and navigate to your domain
 - Navigate to Security -> Security rules
-- Create a custom rule to check for presence of `kyapay-token` or `skyfire-pay-id` header or else block the request on this hostname. If you're on an enterprise plan and have bot management enabled, you can utilise bot-score condition also in this rule
+- Create a custom rule to check for presence of `kyapay-token` header or else block the request on this hostname. If you're on an enterprise plan and have bot management enabled, you can utilise bot-score condition also in this rule
 
 In our demo, this is how our rule is configured -
 ![sample waf rule](/cloudflare/static/api-gateway-waf-rule.png)

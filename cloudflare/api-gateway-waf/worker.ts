@@ -24,15 +24,9 @@ export default {
     const JWT_ISSUER = env.OFFICIAL_SKYFIRE_JWT_ISSUER;
     const ORIGIN_URL = env.MOCK_NEWS_WEBSITE;
 
-    // Authentication with kyapay-token or skyfire-pay-id header
-    const skyfireToken =
-      request.headers.get("kyapay-token") ||
-      request.headers.get("skyfire-pay-id") ||
-      "";
-
-    const skyfireHeaderExists =
-      request.headers.has("kyapay-token") ||
-      request.headers.has("skyfire-pay-id");
+    // Authentication with kyapay-token header
+    const skyfireToken = request.headers.get("kyapay-token") || "";
+    const skyfireHeaderExists = request.headers.has("kyapay-token");
 
     if (skyfireHeaderExists) {
       // JWT verification
