@@ -65,7 +65,7 @@ export default function App() {
       <PageLayout>
         <CrawlSearchLog
           skyfireKyaToken={skyfireKyaToken}
-          onCloudflareUrlChange={setSelectedUrl}
+          onUrlChange={setSelectedUrl}
         />
       </PageLayout>
     </>

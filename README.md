@@ -80,7 +80,7 @@ The demo consists of four integrated projects that work together to demonstrate 
 - Available at: [https://github.com/skyfire-xyz/skyfire-solutions-cloudflare-news-crawler-demo/cloudflare](/cloudflare/)
 - Purpose: Acts as the API Gateway / CDN / Bot Manager and `kya` token processor
 - Features:
-  - `kya` Token Verification - Validates the tokens in the `kyapay-token` or `skyfire-pay-id` header of the requests
+  - `kya` Token Verification - Validates the tokens in the `kyapay-token` header of the requests
   - Request Proxying - Forwards valid requests to the target website
 
 4. Protected Website:
