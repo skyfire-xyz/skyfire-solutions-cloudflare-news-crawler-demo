@@ -35,6 +35,7 @@ BACKEND_API_URL = "https://api.skyfire.xyz"
 OFFICIAL_SKYFIRE_JWT_ALGORITHM = "ES256"
 OFFICIAL_SKYFIRE_JWT_ISSUER = "https://app.skyfire.xyz"
 MOCK_NEWS_WEBSITE="https://demo-mock-news-cloudflare.onrender.com"
+SELLER_DOMAIN=<seller_domain>
 ```
 
 - Bundle your TypeScript code for deployment:
@@ -100,6 +101,7 @@ BACKEND_API_URL = "https://api.skyfire.xyz"
 OFFICIAL_SKYFIRE_JWT_ALGORITHM = "ES256"
 OFFICIAL_SKYFIRE_JWT_ISSUER = "https://app.skyfire.xyz"
 MOCK_NEWS_WEBSITE="https://demo-mock-news-cloudflare.onrender.com"
+SELLER_DOMAIN=<seller_domain>
 ```
 
 ### 4. Build the Worker
