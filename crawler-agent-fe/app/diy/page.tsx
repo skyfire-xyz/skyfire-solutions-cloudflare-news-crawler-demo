@@ -97,7 +97,7 @@ export default function DIYPage() {
   --data '{
   "type": "kya",
   "buyerTag": "",
-  "sellerDomain": "${new URL(selectedCloudflare).hostname}"
+  "sellerDomainOrUrl": "${new URL(selectedCloudflare).hostname}"
 }'`
 
   const step4Curl = `curl "${selectedCloudflare}" \\
@@ -266,7 +266,7 @@ export default function DIYPage() {
                     </li>
                     <li>
                       <code className="rounded bg-white px-1">
-                        sellerDomain
+                        sellerDomainOrUrl
                       </code>
                       : Seller domain
                     </li>

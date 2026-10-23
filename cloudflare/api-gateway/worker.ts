@@ -10,10 +10,10 @@ const errorResponse = (error: string, status = 401) =>
   });
 
 const runChecks = (
-  checks: Array<[boolean, string]>,
+  checks: Array<[() => boolean, string]>,
 ): Response | null => {
   for (const [ok, msg] of checks) {
-    if (!ok) {
+    if (!ok()) {
       console.log(msg);
       return errorResponse(msg);
     }
@@ -42,6 +42,10 @@ export default {
     const JWKS_URL = `${BACKEND_API_URL}/.well-known/jwks.json`;
     const JWT_ISSUER = env.OFFICIAL_SKYFIRE_JWT_ISSUER;
     const ORIGIN_URL = env.MOCK_NEWS_WEBSITE;
+
+    if (typeof env.SELLER_DOMAIN !== "string" || env.SELLER_DOMAIN.length === 0) {
+      console.error("SELLER_DOMAIN is not configured");
+    }
 
     // Authentication with kyapay-token header
     const skyfireToken = request.headers.get("kyapay-token") || "";
@@ -83,16 +87,24 @@ export default {
     }
 
     const typOk = ["kya+jwt", "kya-pay+jwt"].includes(`${protectedHeader.typ}`);
+    const emailRaw = payload.hid?.email;
     const err = runChecks([
-      [typOk, "Invalid typ - typ should be one of kya+jwt or kya-pay+jwt"],
-      [validator.isEmail(payload.hid?.email), "Invalid email format"],
-      [payload.env === "production", "Token is not from production environment"],
-      [validator.isUUID(payload.jti), "Invalid token ID (jti) - not a valid UUID"],
-      [validator.isUUID(payload.sub), "Invalid subject (sub) - not a valid UUID"],
-      [validator.isUUID(payload.aud), "Invalid audience (aud) - not a valid UUID"],
-      [payload.apd != null, "Missing required claim: apd"],
-      [payload.aid != null, "Missing required claim: aid"],
-      [payload.sdm === env.SELLER_DOMAIN, "Invalid sdm - does not match seller domain"],
+      [() => typOk, "Invalid typ - typ should be one of kya+jwt or kya-pay+jwt"],
+      [() => typeof emailRaw === "string" && validator.isEmail(emailRaw), "Invalid email format"],
+      [() => payload.env === "production", "Token is not from production environment"],
+      [() => typeof payload.jti === "string" && validator.isUUID(payload.jti), "Invalid token ID (jti) - not a valid UUID"],
+      [() => typeof payload.sub === "string" && validator.isUUID(payload.sub), "Invalid subject (sub) - not a valid UUID"],
+      [() => typeof payload.aud === "string" && validator.isUUID(payload.aud), "Invalid audience (aud) - not a valid UUID"],
+      [() => payload.apd != null, "Missing required claim: apd"],
+      [() => payload.aid != null, "Missing required claim: aid"],
+      [
+        () =>
+          typeof env.SELLER_DOMAIN === "string" &&
+          env.SELLER_DOMAIN.length > 0 &&
+          typeof payload.sdm === "string" &&
+          payload.sdm === env.SELLER_DOMAIN,
+        "Invalid sdm claim",
+      ],
     ]);
     if (err) return err;
 

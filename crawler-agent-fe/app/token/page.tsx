@@ -16,6 +16,9 @@ export default function CrawlWithTokenPage() {
   const [kyaToken, setKyaToken] = useState<string | null>("")
   const [decodedToken, setDecodedToken] = useState<any>(null)
   const [selectedUrl, setSelectedUrl] = useState<string>("")
+  const [isCreatingToken, setIsCreatingToken] = useState(false)
+
+  const isUrlValid = /^https?:\/\//.test(selectedUrl)
 
   const handleStartOver = () => {
     setKyaToken(null)
@@ -23,6 +26,8 @@ export default function CrawlWithTokenPage() {
   }
 
   const handleCreateToken = async () => {
+    if (!isUrlValid) return
+    setIsCreatingToken(true)
     try {
       const response: AxiosResponse<{ token: string; error: string }> =
         await axios.post(`${process.env.NEXT_PUBLIC_SERVICE_BASE_URL}/token`, {
@@ -41,6 +46,8 @@ export default function CrawlWithTokenPage() {
       const apiError = err.response?.data?.error || "Unknown error"
       setError(apiError)
       setKyaToken(null)
+    } finally {
+      setIsCreatingToken(false)
     }
   }
 
@@ -125,8 +132,13 @@ export default function CrawlWithTokenPage() {
                 <UrlSelector
                   value={selectedUrl}
                   onChange={setSelectedUrl}
-                  disabled={!!kyaToken}
+                  disabled={!!kyaToken || isCreatingToken}
                 />
+                {selectedUrl && !isUrlValid && (
+                  <div className="text-sm text-red-600">
+                    URL must start with http:// or https://
+                  </div>
+                )}
               </div>
             </div>
 
@@ -199,9 +211,9 @@ export default function CrawlWithTokenPage() {
                 <button
                   className="w-fit rounded bg-black px-6 py-2 font-semibold text-white transition hover:bg-gray-800 disabled:opacity-60"
                   onClick={handleCreateToken}
-                  disabled={!selectedUrl}
+                  disabled={!isUrlValid || isCreatingToken}
                 >
-                  Create Token
+                  {isCreatingToken ? "Creating…" : "Create Token"}
                 </button>
               </div>
             )}
