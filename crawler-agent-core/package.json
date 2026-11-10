@@ -35,7 +35,7 @@
     "@types/cors": "2.8.19",
     "@types/express": "4.17.25",
     "@types/node": "24.13.3",
-    "concurrently": "10.0.5",
+    "concurrently": "10.0.6",
     "eslint": "9.39.5",
     "eslint-config-prettier": "10.1.8",
     "globals": "17.11.0",
