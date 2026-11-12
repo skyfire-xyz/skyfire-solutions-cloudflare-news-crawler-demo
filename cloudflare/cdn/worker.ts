@@ -3,10 +3,29 @@
 import { jwtVerify, createRemoteJWKSet, errors as joseErrors } from "jose";
 import validator from "validator";
 
+const errorResponse = (error: string, status = 401) =>
+  new Response(JSON.stringify({ error }), {
+    status,
+    headers: { "content-type": "application/json" },
+  });
+
+const runChecks = (
+  checks: Array<[() => boolean, string]>,
+): Response | null => {
+  for (const [ok, msg] of checks) {
+    if (!ok()) {
+      console.log(msg);
+      return errorResponse(msg);
+    }
+  }
+  return null;
+};
+
 type Env = {
   BACKEND_API_URL: string;
   OFFICIAL_SKYFIRE_JWT_ALGORITHM: string;
   OFFICIAL_SKYFIRE_JWT_ISSUER: string;
+  SELLER_DOMAIN: string;
 };
 
 // Cloudflare Workers entry point
@@ -22,21 +41,16 @@ export default {
     const JWKS_URL = `${BACKEND_API_URL}/.well-known/jwks.json`;
     const JWT_ISSUER = env.OFFICIAL_SKYFIRE_JWT_ISSUER;
 
-    // Authentication with kyapay-token or skyfire-pay-id header
-    const skyfireToken =
-      request.headers.get("kyapay-token") ||
-      request.headers.get("skyfire-pay-id") ||
-      "";
+    if (typeof env.SELLER_DOMAIN !== "string" || env.SELLER_DOMAIN.length === 0) {
+      console.error("SELLER_DOMAIN is not configured");
+    }
+
+    // Authentication with kyapay-token header
+    const skyfireToken = request.headers.get("kyapay-token") || "";
     if (!skyfireToken) {
-      return new Response(
-        JSON.stringify({
-          error:
-            "Missing KYAPay token in the kyapay-token header. Please create an account at https://app.skyfire.xyz and create a kya token - https://docs.skyfire.xyz/reference/create-token and include it in your request in the kyapay-token header.",
-        }),
-        {
-          status: 403,
-          headers: { "Content-Type": "application/json" },
-        },
+      return errorResponse(
+        "Missing KYAPay token in the kyapay-token header. Please create an account at https://app.skyfire.xyz and create a kya token - https://docs.skyfire.xyz/reference/create-token and include it in your request in the kyapay-token header.",
+        403,
       );
     }
 
@@ -51,19 +65,6 @@ export default {
         issuer: JWT_ISSUER,
         algorithms: [JWT_ALGORITHM],
       }));
-
-      if (!["kya+jwt", "kya-pay+jwt"].includes(`${protectedHeader.typ}`)) {
-        console.log("Invalid typ:", protectedHeader.typ);
-        return new Response(
-          JSON.stringify({
-            error: "Invalid typ - typ should be one of kya+jwt or kya-pay+jwt",
-          }),
-          {
-            status: 401,
-            headers: { "content-type": "application/json" },
-          },
-        );
-      }
     } catch (err: unknown) {
       console.error("Error while verifying token: ", err);
       if (err instanceof joseErrors.JOSEError) {
@@ -80,75 +81,30 @@ export default {
           },
         );
       }
-      return new Response(
-        JSON.stringify({
-          error: `Something went wrong while verifying your JWT token`,
-        }),
-        {
-          status: 401,
-          headers: { "Content-Type": "application/json" },
-        },
-      );
+      return errorResponse(`Something went wrong while verifying your JWT token`);
     }
 
-    // JWT successfully verified, now verify email
-    const isEmailValid = validator.isEmail(payload.hid.email);
-
-    if (!isEmailValid) {
-      console.log("Invalid email format");
-      return new Response(JSON.stringify({ error: "Invalid email format" }), {
-        status: 401,
-        headers: { "content-type": "application/json" },
-      });
-    }
-
-    // Validate env is 'production'
-    if (payload.env !== "production") {
-      console.log("Invalid environment:", payload.env);
-      return new Response(
-        JSON.stringify({ error: "Token is not from production environment" }),
-        {
-          status: 401,
-          headers: { "content-type": "application/json" },
-        },
-      );
-    }
-
-    // Validate jti is a UUID
-    if (!validator.isUUID(payload.jti)) {
-      console.log("Invalid jti:", payload.jti);
-      return new Response(
-        JSON.stringify({ error: "Invalid token ID (jti) - not a valid UUID" }),
-        {
-          status: 401,
-          headers: { "content-type": "application/json" },
-        },
-      );
-    }
-
-    // Validate sub is a UUID
-    if (!validator.isUUID(payload.sub)) {
-      console.log("Invalid sub:", payload.sub);
-      return new Response(
-        JSON.stringify({ error: "Invalid subject (sub) - not a valid UUID" }),
-        {
-          status: 401,
-          headers: { "content-type": "application/json" },
-        },
-      );
-    }
-
-    // Validate aud is a UUID
-    if (!validator.isUUID(payload.aud)) {
-      console.log("Invalid aud:", payload.aud);
-      return new Response(
-        JSON.stringify({ error: "Invalid audience (aud) - not a valid UUID" }),
-        {
-          status: 401,
-          headers: { "content-type": "application/json" },
-        },
-      );
-    }
+    const typOk = ["kya+jwt", "kya-pay+jwt"].includes(`${protectedHeader.typ}`);
+    const emailRaw = payload.hid?.email;
+    const err = runChecks([
+      [() => typOk, "Invalid typ - typ should be one of kya+jwt or kya-pay+jwt"],
+      [() => typeof emailRaw === "string" && validator.isEmail(emailRaw), "Invalid email format"],
+      [() => payload.env === "production", "Token is not from production environment"],
+      [() => typeof payload.jti === "string" && validator.isUUID(payload.jti), "Invalid token ID (jti) - not a valid UUID"],
+      [() => typeof payload.sub === "string" && validator.isUUID(payload.sub), "Invalid subject (sub) - not a valid UUID"],
+      [() => typeof payload.aud === "string" && validator.isUUID(payload.aud), "Invalid audience (aud) - not a valid UUID"],
+      [() => payload.apd != null, "Missing required claim: apd"],
+      [() => payload.aid != null, "Missing required claim: aid"],
+      [
+        () =>
+          typeof env.SELLER_DOMAIN === "string" &&
+          env.SELLER_DOMAIN.length > 0 &&
+          typeof payload.sdm === "string" &&
+          payload.sdm === env.SELLER_DOMAIN,
+        "Invalid sdm claim",
+      ],
+    ]);
+    if (err) return err;
 
     return fetch(request);
   },

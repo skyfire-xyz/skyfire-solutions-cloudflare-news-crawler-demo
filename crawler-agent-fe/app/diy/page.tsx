@@ -97,12 +97,11 @@ export default function DIYPage() {
   --data '{
   "type": "kya",
   "buyerTag": "",
-  "sellerServiceId": "51bcabe1-c699-474e-bc35-9840b248da52"
+  "sellerDomainOrUrl": "${new URL(selectedCloudflare).hostname}"
 }'`
 
   const step4Curl = `curl "${selectedCloudflare}" \\
-  --header 'kyapay-token: KYA_TOKEN' \\
-  --header 'skyfire-pay-id: KYA_TOKEN'`
+  --header 'kyapay-token: KYA_TOKEN'`
 
   return (
     <>
@@ -267,9 +266,9 @@ export default function DIYPage() {
                     </li>
                     <li>
                       <code className="rounded bg-white px-1">
-                        sellerServiceId
+                        sellerDomainOrUrl
                       </code>
-                      : Crawler service ID
+                      : Seller domain
                     </li>
                   </ul>
                 </div>
